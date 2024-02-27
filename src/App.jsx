@@ -1,13 +1,17 @@
 import React from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import CustomButton from 'components/buttons/CustomButton';
+import LoginScreen from './screens/Login';
 
 function App() {
   return (
-    <SafeAreaView>
-      <View style={styles.center}>
-        <Text style={styles.hello}>BriskIt Restaurant- Initial setup</Text>
-      </View>
-    </SafeAreaView>
+    // <SafeAreaView>
+    //   <View style={styles.center}>
+    //     <Text style={styles.hello}>BriskIt Restaurant- Initial setup</Text>
+    //     <CustomButton />
+    //   </View>
+    // </SafeAreaView>
+    <LoginScreen />
   );
 }
 
