@@ -6,12 +6,12 @@ import { BlurView } from '@react-native-community/blur';
 const { width, height } = Dimensions.get('window');
 const sphereSize = width * 2;
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [vendorCode, setVendorCode] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Insert login logic here
+    navigation.navigate('OrderListScreen')
   };
 
   return (
@@ -102,12 +102,6 @@ const styles = StyleSheet.create({
     borderRadius: sphereSize / 2,
     bottom: -width * 0.85,
     left: -width * 0.5,
-  },
-  bottomSection: {
-    // flex: 1,
-    // justifyContent: 'flex-start',
-    // backgroundColor: 'rgba(46, 94, 130, 0.8)',
-    // width: "100%",
   },
   form: {
     flex: 1,

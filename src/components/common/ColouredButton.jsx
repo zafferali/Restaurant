@@ -2,27 +2,27 @@ import React from 'react';
 import {TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
 import colors from 'constants/colors';
 
-const CustomButton = ({onPress, title, style, textStyle, icon}) => (
-  <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-    {icon && <Image source={require('images/edit.png')} style={styles.icon}/>}
-    <Text style={[styles.text, textStyle]}>{title}</Text>
+const ColouredButton = ({onPress, title, style, textStyle, icon, textColor, bgColor}) => (
+  <TouchableOpacity onPress={onPress} style={[styles.button, style, {backgroundColor: bgColor }]}>
+    {icon && <Image source={require('images/phone.png')} style={styles.icon}/>}
+    <Text style={[styles.text, { color: textColor }]}>{title}</Text>
   </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.themeLight,
+    minWidth: '100%', 
     paddingVertical: 8,
     paddingHorizontal: 25,
+    marginBottom: 10,
     borderRadius: 10,
     alignItems: 'center',
     height: 40,
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 6,
+    gap: 12,
   },
   text: {
-    color: colors.theme,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CustomButton;
+export default ColouredButton;
