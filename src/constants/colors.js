@@ -1,6 +1,6 @@
 export default {
     theme: '#2E5E82',
-    themeLight: '#688DA84D',
+    // themeLight: '#2E5E821A',
     text: 'black',
     border: '#E6E6E6',
     textLight: '#A6A6A6',
@@ -9,4 +9,6 @@ export default {
     warning: '#FF94944A',
     warningText: '#FF9494',
     danger: '#DF001B',
+    lightGray: '#F4F4F4',
+    darkGray: '#646464', 
 }

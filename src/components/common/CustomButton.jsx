@@ -11,10 +11,10 @@ const CustomButton = ({onPress, title, style, textStyle, icon}) => (
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.themeLight,
+    backgroundColor: '#688DA84D',
     paddingVertical: 8,
     paddingHorizontal: 25,
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: 'center',
     height: 40,
     flexDirection: 'row',

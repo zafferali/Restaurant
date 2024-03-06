@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import SearchBar from 'common/SearchBar'
 import Layout from 'common/Layout'
@@ -6,6 +6,8 @@ import StatusToggle from 'components/order/StatusToggle'
 import colors from 'constants/colors'
 import ColouredButton from 'common/ColouredButton'
 import ItemWithQty from 'components/order/ItemWithQty'
+import { GlobalStyles } from 'constants/GlobalStyles'
+import CustomCard from 'common/CustomCard'
 
 const OrderDetailScreen = ({ route, navigation }) => {
 
@@ -15,13 +17,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
      smallTitle={route.params.orderNum}
      onBackPress={() => navigation.goBack()}
     >
-      <SearchBar
-        placeholder="Search orders.."
-        onSearch={(query) => {
-          console.log(query)
-        }}
-      />
-
         <View style={styles.statusContainer}>
             <View>
                 <Text >Update Status</Text>
@@ -29,10 +24,39 @@ const OrderDetailScreen = ({ route, navigation }) => {
             <StatusToggle style={styles.toggle}/>
         </View>
 
-        {/* <View style={styles.itemContainer}>
+        <View style={[GlobalStyles.lightBorder, { marginTop: 15}]}>
             <ItemWithQty style={styles.item} itemName={"Pizza"} itemQty={"2"}/>
             <ItemWithQty style={styles.item} itemName={"Brownie"} itemQty={"1"}/>
-        </View> */}
+        </View>
+
+        <View style={[GlobalStyles.lightBorder, { marginTop: 15}]}>
+          <View style={styles.row}>
+            <Text style={styles.text}>Customer Name</Text>
+            <Text style={styles.custName}>Raghav Handa</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.text}>Current Status</Text>
+            <CustomCard text='Began preparing'/>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.text}>Extra Comments</Text>
+            <CustomCard text='I want extra Ketchup' isLightText/>
+          </View>
+        </View>
+
+        <View style={[GlobalStyles.lightBorder, { marginTop: 15}]}>
+          <View style={styles.row}>
+            <Text style={styles.text}>Delivery Person</Text>
+            <CustomCard text='Kanchana Naidu'/>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.text}>Their Phone number</Text>
+            <View style={styles.phoneNumCard}>
+              <Text style={[styles.text, { color: colors.theme}]}>9808701212</Text>
+              <Image source={require('images/call-icon.png')} style={{ width: 26, height: 26}}/>
+            </View>
+          </View>
+        </View>
 
         <View style={styles.bottomSection}>
            <ColouredButton
@@ -61,7 +85,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        marginVertical: 10,
+        marginTop: 15,
         paddingVertical: 10,
         paddingHorizontal: 10,
         borderWidth: 1,
@@ -72,9 +96,33 @@ const styles = StyleSheet.create({
     toggle: {
         flex: 2,
     },
-
-    itemContainer: {
-
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginVertical: 10,
+    },
+    custName: {
+      fontSize: 16,
+      width: 160,
+      fontWeight: '600',
+      color: colors.theme,
+      textAlign: 'left',
+    },
+    text: {
+      color: colors.darkGray,
+      fontWeight: '600',
+      fontSize: 12,
+    },
+    phoneNumCard: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      backgroundColor: '#2E5E821A',
+      borderRadius: 6,
+      paddingHorizontal: 8,
+      paddingVertical: 12,
+      width: 160,
     },
     bottomSection: {
         position: 'absolute',

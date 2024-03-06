@@ -17,12 +17,10 @@ export default ItemWithQty
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        minHeight: 48,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 10,
-        marginHorizontal: 10,
     },
     itemText: {
         color: '#3B3B3B',

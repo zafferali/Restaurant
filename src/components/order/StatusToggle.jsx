@@ -28,12 +28,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#E0E0E0', // Non-active background color
     borderRadius: 20,
-    padding: 2,
+    padding: 4,
   },
   toggleButton: {
-    // flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
     borderRadius: 18, // Slightly less than container to fit inside padding
     alignItems: 'center',
     justifyContent: 'center',

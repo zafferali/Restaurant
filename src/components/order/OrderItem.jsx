@@ -68,7 +68,7 @@ const OrderItem = ({ order, navigation }) => {
               </View>
               <StatusToggle style={styles.toggle}/>
             </View>
-            <CustomButton icon title="Manage Order" onPress={handleManage} style={styles.buttonText}/>
+            <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, styles.manageOrderBtn]}/>
           </>
         )}
       </View>
@@ -85,22 +85,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 16,
   },
-  topRow: {
-    // styles for top row
-  },
   item: {
     marginBottom: 20,
   },
   middleRow: {
-    // styles for middle row
+    marginHorizontal: 10,
   },
   bottomRow: {
-    // styles for bottom row
-  },
-  updateStatusContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
+    marginTop: 12,
   },
   updateButton: {
     backgroundColor: 'lightblue',
@@ -113,7 +105,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
-    alignSelf: 'center', // Center the button if alone in the row
+    alignSelf: 'center',
   },
   manageButtonText: {
     color: 'black',
@@ -128,6 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+    marginHorizontal: 10,
     marginBottom: 10,
     gap: 10,
   },
@@ -141,10 +134,9 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
+    borderRadius: 8,
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 4,
@@ -155,7 +147,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 12,
   },
-// Add specific styles for accept and reject buttons if needed
   acceptButton: {
     backgroundColor: colors.theme,
     flex: 2,
@@ -167,6 +158,9 @@ const styles = StyleSheet.create({
   icon: {
     width: 24,
     height: 24,
+  },
+  manageOrderBtn: {
+    marginHorizontal: 8,
   }
 });
 
