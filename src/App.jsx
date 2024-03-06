@@ -1,18 +1,19 @@
-import React from 'react';
-import {SafeAreaView, StyleSheet, Text, View, StatusBar} from 'react-native';
-import LoginScreen from 'screens/LoginScreen';
-import OrderListScreen from 'screens/OrderListScreen'
-import OrderDetailScreen from 'screens/OrderListScreen/OrderDetailScreen';
-import AppNavigator from './navigation/AppNavigator';
+import React, {useState} from 'react';
+import {StyleSheet, StatusBar} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import BottomTabNavigator from './navigation/BottomTabNavigator';
+import { AuthStackNavigator } from './navigation/AuthStackNavigator';
 
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+
   return (
     <>
       <StatusBar backgroundColor="transparent" translucent={true} />
-      {/* <LoginScreen />
-      <OrderListScreen /> */}
-      <AppNavigator />
+      <NavigationContainer>
+        {isAuthenticated ? <BottomTabNavigator /> : <AuthStackNavigator />}
+      </NavigationContainer>
     </>
   );
 }

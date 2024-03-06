@@ -19,7 +19,7 @@ const OrderItem = ({ order, navigation }) => {
   };
 
   const handleManage = () => {
-    navigation.navigate('OrderDetailScreen')
+    navigation.navigate('OrderDetailScreen', { orderNum: 'Order #301'  })
   };
 
   // Component to render the update status buttons

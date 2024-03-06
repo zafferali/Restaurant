@@ -7,11 +7,12 @@ import colors from 'constants/colors'
 import ColouredButton from 'common/ColouredButton'
 import ItemWithQty from 'components/order/ItemWithQty'
 
-const OrderDetailScreen = ({ navigation }) => {
+const OrderDetailScreen = ({ route, navigation }) => {
+
   return (
     <Layout  
      showBackButton
-     smallTitle="Order"
+     smallTitle={route.params.orderNum}
      onBackPress={() => navigation.goBack()}
     >
       <SearchBar

@@ -1,34 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import colors from 'constants/colors';
-const Menu = ({ onNavigate }) => {
-  // Dummy navigation functions
-  const navigateToHome = () => onNavigate('Home');
-  const navigateToBusiness = () => onNavigate('Business');
-  const navigateToProfile = () => onNavigate('Profile');
+import { useNavigation } from '@react-navigation/native';
+
+const Menu = () => {
+  const [activeItem, setActiveItem] = useState('home')
+  const navigation = useNavigation()
+
+  const menuItems = [
+    { id: 'home', text: 'Home', source: require('images/home-icon.png'), activeSource: require('images/home-icon-blue.png'), toScreen: 'OrderListScreen' },
+    { id: 'business', text: 'Business', source: require('images/dollar-icon.png'), activeSource: require('images/dollar-icon-blue.png'), toScreen: 'BusinessScreen' },
+    { id: 'profile', text: 'Profile', source: require('images/user-icon.png'), activeSource: require('images/user-icon-blue.png'), toScreen: 'ProfileScreen' },
+  ];
+
+  const handlePress = (item) => {
+    navigation.navigate(item.toScreen)
+    setActiveItem(() => item.id);
+    console.log(`Pressed item: ${item.id}`);
+  };
+
 
   return (
     <View style={styles.menuContainer}>
-      {/* Home Button */}
-      <TouchableOpacity onPress={navigateToHome} style={styles.menuItem}>
-        {/* Placeholder for the icon, replace with Image component later */}
-        <Image source={require('images/home-icon.png')} style={styles.menuIcon}/>
-        <Text style={styles.menuText}>Home</Text>
-      </TouchableOpacity>
-
-      {/* Business Button */}
-      <TouchableOpacity onPress={navigateToBusiness} style={styles.menuItem}>
-        {/* Placeholder for the icon, replace with Image component later */}
-        <Image source={require('images/dollar-icon.png')} style={styles.menuIcon}/>
-        <Text style={styles.menuText}>Business</Text>
-      </TouchableOpacity>
-
-      {/* Profile Button */}
-      <TouchableOpacity onPress={navigateToProfile} style={styles.menuItem}>
-        {/* Placeholder for the icon, replace with Image component later */}
-        <Image source={require('images/user-icon.png')} style={styles.menuIcon}/>
-        <Text style={styles.menuText}>Profile</Text>
-      </TouchableOpacity>
+      {menuItems.map(item => (
+        <TouchableOpacity key={item.id} onPress={() => handlePress(item)} style={styles.menuItem}>
+          <Image source={activeItem === item.id ? item.activeSource : item.source} style={styles.menuIcon}/>
+          <Text style={ activeItem === item.id ? styles.menuTextBlue : styles.menuText }>{item.text}</Text>
+       </TouchableOpacity>
+      ))}
     </View>
   );
 };
@@ -55,7 +54,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.textLight,
   },
-  // Add styles for your icons
+  menuTextBlue: {
+    fontSize: 14,
+    color: colors.theme,
+  }
 });
 
 export default Menu;

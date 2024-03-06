@@ -24,6 +24,7 @@ const OrdersListScreen = ({navigation}) => {
      showMenu
      bigTitle="Orders"
      onBackPress={() => console.log('Back button pressed')}
+     navigation={navigation}
     >
       <SearchBar
         placeholder="Search orders.."

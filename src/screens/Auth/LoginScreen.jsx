@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Dimensions, View, Image, Text, TextInput, ImageBackground, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import colors from 'constants/colors';
-import { BlurView } from '@react-native-community/blur';
 
 const { width, height } = Dimensions.get('window');
 const sphereSize = width * 2;
