@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView } from 'react-native'
 import React from 'react'
 import SearchBar from 'common/SearchBar'
 import Layout from 'common/Layout'
@@ -12,11 +12,9 @@ import CustomCard from 'common/CustomCard'
 const OrderDetailScreen = ({ route, navigation }) => {
 
   return (
-    <Layout  
-     showBackButton
-     smallTitle={route.params.orderNum}
-     onBackPress={() => navigation.goBack()}
-    >
+    <>
+    <Layout>
+      <ScrollView>
         <View style={styles.statusContainer}>
             <View>
                 <Text >Update Status</Text>
@@ -57,24 +55,25 @@ const OrderDetailScreen = ({ route, navigation }) => {
             </View>
           </View>
         </View>
-
-        <View style={styles.bottomSection}>
-           <ColouredButton
-            bgColor= '#FFF1CC'
-            textColor= '#BA8700'
-            title= 'Call Helpdesk'
-            icon
-            onPress= {() => console.log('pressed')}
-           />
-
-           <ColouredButton
-            bgColor= {colors.warning}
-            textColor= {colors.danger}
-            title= 'Cancel Order'
-            onPress= {() => console.log('pressed')}
-           />
-        </View>
+        </ScrollView>
     </Layout>
+    <View style={styles.bottomSection}>
+    <ColouredButton
+     bgColor= '#FFF1CC'
+     textColor= '#BA8700'
+     title= 'Call Helpdesk'
+     icon
+     onPress= {() => console.log('pressed')}
+    />
+
+    <ColouredButton
+     bgColor= {colors.warning}
+     textColor= {colors.danger}
+     title= 'Cancel Order'
+     onPress= {() => console.log('pressed')}
+    />
+ </View>
+ </>
   )
 }
 
@@ -86,6 +85,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         marginTop: 15,
+        marginBottom: 10,
         paddingVertical: 10,
         paddingHorizontal: 10,
         borderWidth: 1,
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
     },
     bottomSection: {
         position: 'absolute',
-        bottom: 10,
+        bottom: 5,
+        paddingHorizontal: 20,
     }
 })

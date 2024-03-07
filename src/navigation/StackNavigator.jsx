@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
 import MenuScreen from 'screens/MenuScreen';
 import EditItemScreen from 'screens/MenuScreen/EditItemScreen';
@@ -25,6 +25,8 @@ export const MenuStackScreen = () => (
         screenOptions={{
             headerTitleStyle: styles.headerTitle,
             headerBackTitleVisible: false, // Hides the back title next to the back button (iOS)
+            gestureEnabled: true, // Enable gesture navigation
+            ...TransitionPresets.SlideFromRightIOS,
         }}
     >
         <MenuStack.Screen
@@ -46,6 +48,8 @@ export const OrderListStackScreen = () => (
     screenOptions={{
         headerTitleStyle: styles.headerTitle,
         headerBackTitleVisible: false, // Hides the back title next to the back button (iOS)
+        gestureEnabled: true, // Enable gesture navigation
+        ...TransitionPresets.SlideFromRightIOS,
     }}
 >
     <OrderListStack.Screen
@@ -65,13 +69,15 @@ export const OrderListStackScreen = () => (
 export const ProfileStackScreen = () => (
     <ProfileStack.Navigator
         screenOptions={{
-            headerTitleStyle: styles.headerTitle
+            headerTitleStyle: styles.headerTitle,
+            gestureEnabled: true, // Enable gesture navigation
+            ...TransitionPresets.SlideFromRightIOS,
         }}
     >
         <ProfileStack.Screen 
             name="ProfileScreen" 
             component={ProfileScreen}
-            options={{ title: 'Profile' }}
+            options={{ headerShown: false }}
         />
         <ProfileStack.Screen 
             name="SettingsScreen" 
@@ -84,7 +90,9 @@ export const ProfileStackScreen = () => (
 export const BusinessStackScreen = () => (
     <BusinessStack.Navigator
         screenOptions={{
-            headerTitleStyle: styles.headerTitle
+            headerTitleStyle: styles.headerTitle,
+            gestureEnabled: true, // Enable gesture navigation
+            ...TransitionPresets.SlideFromRightIOS,
     }}
     >
         <BusinessStack.Screen 

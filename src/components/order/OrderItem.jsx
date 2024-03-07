@@ -68,7 +68,7 @@ const OrderItem = ({ order, navigation }) => {
               </View>
               <StatusToggle style={styles.toggle}/>
             </View>
-            <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, styles.manageOrderBtn]}/>
+            <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, {marginHorizontal: 8}]}/>
           </>
         )}
       </View>
@@ -159,9 +159,6 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
-  manageOrderBtn: {
-    marginHorizontal: 8,
-  }
 });
 
 export default OrderItem;

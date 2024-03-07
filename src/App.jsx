@@ -3,7 +3,14 @@ import {StyleSheet, StatusBar} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import { AuthStackNavigator } from './navigation/AuthStackNavigator';
+import { setCustomText } from 'react-native-global-props';
 
+const customTextProps = {
+  style: {
+    fontFamily: 'Inter-SemiBold'
+  }
+};
+setCustomText(customTextProps);
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
