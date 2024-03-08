@@ -67,8 +67,8 @@ const OrderItem = ({ order, navigation }) => {
                 <Text >Update Status</Text>
               </View>
               <StatusToggle style={styles.toggle}
-                option1='Food preparing'
-                option2='Ready for pickup'
+                option1='Food Preparing'
+                option2='Ready for Pickup'
               />
             </View>
             <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, { marginHorizontal: 8 }]} />

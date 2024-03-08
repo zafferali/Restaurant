@@ -33,7 +33,7 @@ const StatusToggle = ({ option1, option2, option3}) => {
 const styles = StyleSheet.create({
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: '#E0E0E0', // Non-active background color
+    backgroundColor: colors.lightGray,
     borderRadius: 20,
     padding: 4,
   },

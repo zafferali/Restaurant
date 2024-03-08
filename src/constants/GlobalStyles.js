@@ -4,7 +4,7 @@ import colors from './colors';
 export const GlobalStyles = StyleSheet.create({
     lightBorder: {
         borderRadius: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 12,
         paddingVertical: 12,
         borderColor: colors.border,
         borderWidth: 1,

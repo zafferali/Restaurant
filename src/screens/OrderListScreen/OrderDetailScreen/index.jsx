@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView, Linking, Alert } from 'react-native'
 import React from 'react'
 import SearchBar from 'common/SearchBar'
 import Layout from 'common/Layout'
@@ -8,8 +8,25 @@ import ColouredButton from 'common/ColouredButton'
 import ItemWithQty from 'components/order/ItemWithQty'
 import { GlobalStyles } from 'constants/GlobalStyles'
 import CustomCard from 'common/CustomCard'
+import { requestCallPermission } from 'globals/permissions'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const OrderDetailScreen = ({ route, navigation }) => {
+
+  const makeCall = async (phoneNumber) => {
+    const isPermissionGranted = await requestCallPermission();
+
+    if (isPermissionGranted) {
+      let phoneNumberString = `tel:${phoneNumber}`;
+      Linking.openURL(phoneNumberString).catch(err => {
+        console.error('An error occurred', err);
+        Alert.alert('Failed to make a call', 'An unexpected error occurred');
+      });
+    } else {
+      // The Alert here is optional since the alert for permission denied is in the global function
+      console.log('Call permission denied');
+    }
+  };
 
   return (
     <>
@@ -19,7 +36,10 @@ const OrderDetailScreen = ({ route, navigation }) => {
             <View>
               <Text >Update Status</Text>
             </View>
-            <StatusToggle style={styles.toggle} />
+            <StatusToggle style={styles.toggle}
+              option1='Food Preparing'
+              option2='Ready for Pickup'
+            />
           </View>
 
           <View style={[GlobalStyles.lightBorder, { marginTop: 15 }]}>
@@ -49,10 +69,10 @@ const OrderDetailScreen = ({ route, navigation }) => {
             </View>
             <View style={styles.row}>
               <Text style={styles.text}>Their Phone number</Text>
-              <View style={styles.phoneNumCard}>
+              <TouchableOpacity onPress={() => makeCall(+919808701212)} style={styles.phoneNumCard}>
                 <Text style={[styles.text, { color: colors.theme }]}>9808701212</Text>
                 <Image source={require('images/call-icon.png')} style={{ width: 26, height: 26 }} />
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
@@ -63,15 +83,15 @@ const OrderDetailScreen = ({ route, navigation }) => {
           textColor='#BA8700'
           title='Call Helpdesk'
           icon
-          onPress={() => console.log('pressed')}
+          onPress={() => makeCall("+919884713387")}
         />
 
-        <ColouredButton
+        {/* <ColouredButton
           bgColor={colors.warning}
           textColor={colors.danger}
           title='Cancel Order'
           onPress={() => console.log('pressed')}
-        />
+        /> */}
       </View>
     </>
   )
