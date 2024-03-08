@@ -18,13 +18,13 @@ const orders = [
   // ... Add more dummy orders
 ];
 
-const OrdersListScreen = ({navigation}) => {
+const OrdersListScreen = ({ navigation }) => {
   return (
-    <Layout  
-     showMenu
-     bigTitle="Orders"
-     onBackPress={() => console.log('Back button pressed')}
-     navigation={navigation}
+    <Layout
+      showMenu
+      bigTitle="Orders"
+      onBackPress={() => console.log('Back button pressed')}
+      navigation={navigation}
     >
       <SearchBar
         placeholder="Search orders.."
@@ -35,7 +35,7 @@ const OrdersListScreen = ({navigation}) => {
       <FlatList
         data={orders}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <OrderItem order={item} navigation={navigation}/>}
+        renderItem={({ item }) => <OrderItem order={item} navigation={navigation} />}
         contentContainerStyle={styles.list}
       />
     </Layout>
@@ -44,8 +44,8 @@ const OrdersListScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
   list: {
-  paddingTop: 20,
-  paddingBottom: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
 });
 

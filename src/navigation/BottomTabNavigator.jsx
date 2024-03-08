@@ -12,81 +12,81 @@ const Tab = createBottomTabNavigator();
 
 function BottomTabNavigator() {
   return (
-      <Tab.Navigator
-        screenOptions = {{
-          tabBarShowLabel: false,
-          tabBarStyle: styles.menuContainer,
-          headerShown: false,
+    <Tab.Navigator
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarStyle: styles.menuContainer,
+        headerShown: false,
+      }}
+    >
+      {/* Home */}
+      {/* <Tab.Screen name="Home" component={MenuStackScreen}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getFocusedRouteNameFromRoute(route) === 'OrderDetailScreen' ? 'none' : 'flex',
+            height: 70,
+          },
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.menuItem}>
+              <Image
+                source={require('images/home-icon.png')}
+                resizeMode='contain'
+                style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]} />
+              <Text style={[styles.menuText, { color: focused ? colors.theme : colors.textLight }]}>Home</Text>
+            </View>
+          )
+        })}
+      /> */}
+
+      {/* Orders */}
+      <Tab.Screen name="Orders" component={OrderListStackScreen}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getFocusedRouteNameFromRoute(route) === 'OrderDetailScreen' ? 'none' : 'flex',
+            height: 70,
+          },
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.menuItem}>
+              <Image
+                source={require('images/orders-icon.png')}
+                resizeMode='contain'
+                style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]} />
+              <Text style={[styles.menuText, { color: focused ? colors.theme : colors.textLight }]}>Orders</Text>
+            </View>
+          )
+        })}
+      />
+
+      {/* Business */}
+      <Tab.Screen name="Business" component={BusinessStackScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.menuItem}>
+              <Image
+                source={require('images/dollar-icon.png')}
+                resizeMode='contain'
+                style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]} />
+              <Text style={[styles.menuText, { color: focused ? colors.theme : colors.textLight }]}>Business</Text>
+            </View>
+          )
         }}
-      >
-        {/* Home */}
-        <Tab.Screen name="Home" component={MenuStackScreen} 
-          options={({ route }) => ({
-            tabBarStyle: { 
-              display: getFocusedRouteNameFromRoute(route) === 'OrderDetailScreen' ? 'none' : 'flex',
-              height: 70,
-            },
-            tabBarIcon: ({focused}) => (
-              <View style={styles.menuItem}>
-                  <Image 
-                    source={require('images/home-icon.png')}
-                    resizeMode='contain' 
-                    style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]}/>
-                  <Text style={ [styles.menuText, {color: focused? colors.theme : colors.textLight}] }>Home</Text>
-              </View>
-            )
-          })} 
-        />
+      />
 
-        {/* Orders */}
-        <Tab.Screen name="Orders" component={OrderListStackScreen} 
-          options={({ route }) => ({
-            tabBarStyle: { 
-              display: getFocusedRouteNameFromRoute(route) === 'OrderDetailScreen' ? 'none' : 'flex',
-              height: 70,
-            },
-            tabBarIcon: ({focused}) => (
-              <View style={styles.menuItem}>
-                  <Image 
-                    source={require('images/orders-icon.png')}
-                    resizeMode='contain' 
-                    style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]}/>
-                  <Text style={ [styles.menuText, {color: focused? colors.theme : colors.textLight}] }>Orders</Text>
-              </View>
-            )
-          })} 
-        />
-
-        {/* Business */}
-        <Tab.Screen name="Business" component={BusinessStackScreen}
-          options={{
-            tabBarIcon: ({focused}) => (
-              <View style={styles.menuItem}>
-                  <Image 
-                    source={require('images/dollar-icon.png')}
-                    resizeMode='contain' 
-                    style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]}/>
-                  <Text style={ [styles.menuText, {color: focused? colors.theme : colors.textLight}] }>Business</Text>
-              </View>
-            )
-          }}
-         />
-
-         {/* Profile */}
-        <Tab.Screen name="Profile" component={ProfileStackScreen}
-          options={{
-            tabBarIcon: ({focused}) => (
-              <View style={styles.menuItem}>
-                  <Image 
-                    source={require('images/user-icon.png')}
-                    resizeMode='contain' 
-                    style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]}/>
-                  <Text style={ [styles.menuText, {color: focused? colors.theme : colors.textLight}] }>Profile</Text>
-              </View>
-            )
-          }}
-         />
-      </Tab.Navigator>
+      {/* Profile */}
+      <Tab.Screen name="Profile" component={ProfileStackScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.menuItem}>
+              <Image
+                source={require('images/user-icon.png')}
+                resizeMode='contain'
+                style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]} />
+              <Text style={[styles.menuText, { color: focused ? colors.theme : colors.textLight }]}>Profile</Text>
+            </View>
+          )
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 

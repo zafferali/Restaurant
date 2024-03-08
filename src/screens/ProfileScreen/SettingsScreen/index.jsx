@@ -43,8 +43,7 @@ const ProfileEditScreen = () => {
         {profileImage ? (
           <Image source={{ uri: profileImage.uri }} style={styles.profileImage} />
         ) : (
-          // Display an icon indicating that the user can upload an image
-          <Image style={styles.uploadIcon} source={require('images/upload.png')}/>
+          <Image style={styles.uploadIcon} source={require('images/upload.png')} />
         )}
       </TouchableOpacity>
 
@@ -57,7 +56,7 @@ const ProfileEditScreen = () => {
 
       <Text style={styles.label}>Phone Number</Text>
       <View style={styles.phoneNum}>
-          <Text style={styles.phoneNumText}>9894565342</Text>
+        <Text style={styles.phoneNumText}>9894565342</Text>
       </View>
 
       {/* <TouchableOpacity style={styles.button} onPress={handleSave}>
@@ -92,8 +91,8 @@ const styles = StyleSheet.create({
     borderRadius: 60,
   },
   uploadIcon: {
-   width: 42,
-   height: 42,
+    width: 42,
+    height: 42,
   },
   label: {
     alignSelf: 'flex-start',

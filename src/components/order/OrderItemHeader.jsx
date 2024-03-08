@@ -5,7 +5,7 @@ const OrderItemHeader = ({ orderNumber, location }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.orderNumber}>Order
-        <Text style={{ color: colors.theme}}>{orderNumber}</Text>
+        <Text style={{ color: colors.theme }}>{orderNumber}</Text>
       </Text>
       <Text style={styles.location}>{location}</Text>
     </View>

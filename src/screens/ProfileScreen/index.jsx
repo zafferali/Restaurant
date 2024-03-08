@@ -6,14 +6,14 @@ import { GlobalStyles } from 'constants/GlobalStyles'
 import { useNavigation } from '@react-navigation/native'
 
 const ProfileScreen = () => {
-const navigation = useNavigation()
+  const navigation = useNavigation()
 
   const handleSettingsPress = () => {
     navigation.navigate('SettingsScreen')
   };
 
   const handleCallCustomerCarePress = () => {
-    
+
   };
 
   const handleLogoutPress = () => {
@@ -26,7 +26,7 @@ const navigation = useNavigation()
       navigation={navigation}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <Image source={require('images/logo-black.png')} style={styles.logo}/>
+        <Image source={require('images/logo-black.png')} style={styles.logo} />
         <Image source={{ uri: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250" }} style={styles.userImage} />
         <Text style={styles.userName}>Raghav Handa</Text>
         <View style={styles.buttonGroup}>
@@ -37,7 +37,7 @@ const navigation = useNavigation()
             <Text style={styles.buttonText}>Call customer care</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={[GlobalStyles.lightBorder, {alignSelf: 'stretch', paddingLeft: 15}]} onPress={handleLogoutPress}>
+        <TouchableOpacity style={[GlobalStyles.lightBorder, { alignSelf: 'stretch', paddingLeft: 15 }]} onPress={handleLogoutPress}>
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>

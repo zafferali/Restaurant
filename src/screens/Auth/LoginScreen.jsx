@@ -32,33 +32,33 @@ const LoginScreen = ({ navigation }) => {
 
         {/* Semi-transparent overlay View */}
 
-        <View style={styles.halfSphere}/>
+        <View style={styles.halfSphere} />
         <Image
           source={require('images/ellipse.png')}
           style={styles.blurredOverlay}
         />
-          <View style={styles.form}>
-            <TextInput
-              placeholder="Vendor code"
-              placeholderTextColor="rgba(255, 255, 255, 0.4)"
-              value={vendorCode}
-              onChangeText={setVendorCode}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor="rgba(255, 255, 255, 0.4)"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-              style={styles.input}
-            />
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginButtonText}>Login</Text>
-            </TouchableOpacity>
-            <Text style={styles.termsText}>  By signing up, you agree to the</Text>   
-            <Text style={styles.linkText}>Terms & Policy & Privacy Policy</Text>    
-          </View>
+        <View style={styles.form}>
+          <TextInput
+            placeholder="Vendor code"
+            placeholderTextColor="rgba(255, 255, 255, 0.4)"
+            value={vendorCode}
+            onChangeText={setVendorCode}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Password"
+            placeholderTextColor="rgba(255, 255, 255, 0.4)"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+            style={styles.input}
+          />
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.loginButtonText}>Login</Text>
+          </TouchableOpacity>
+          <Text style={styles.termsText}>  By signing up, you agree to the</Text>
+          <Text style={styles.linkText}>Terms & Policy & Privacy Policy</Text>
+        </View>
         {/* </View> */}
       </ImageBackground>
     </KeyboardAvoidingView>
@@ -91,13 +91,13 @@ const styles = StyleSheet.create({
     height: sphereSize,
     borderRadius: sphereSize / 2,
     backgroundColor: 'rgba(46, 94, 130, 0.8)',
-    bottom: -width * 0.65, 
+    bottom: -width * 0.65,
     left: -width * 0.5,
   },
   blurredOverlay: {
     position: 'absolute',
     width: sphereSize,
-    height: sphereSize, 
+    height: sphereSize,
     borderRadius: sphereSize / 2,
     bottom: -width * 0.85,
     left: -width * 0.5,
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    
+
   },
   loginButton: {
     backgroundColor: 'black',

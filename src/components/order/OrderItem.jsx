@@ -19,7 +19,7 @@ const OrderItem = ({ order, navigation }) => {
   };
 
   const handleManage = () => {
-    navigation.navigate('OrderDetailScreen', { orderNum: 'Order #301'  })
+    navigation.navigate('OrderDetailScreen', { orderNum: 'Order #301' })
   };
 
   // Component to render the update status buttons
@@ -43,8 +43,8 @@ const OrderItem = ({ order, navigation }) => {
 
       {/* Middle row with order details */}
       <View style={styles.middleRow}>
-        <ItemWithQty style={styles.item} itemName={"Pizza"} itemQty={"2"}/>
-        <ItemWithQty style={styles.item} itemName={"Brownie"} itemQty={"1"}/>
+        <ItemWithQty style={styles.item} itemName={"Pizza"} itemQty={"2"} />
+        <ItemWithQty style={styles.item} itemName={"Brownie"} itemQty={"1"} />
       </View>
 
       {/* Bottom row with action buttons or update status buttons */}
@@ -52,11 +52,11 @@ const OrderItem = ({ order, navigation }) => {
         {variant === 'acceptReject' ? (
           <View style={styles.buttonsContainer}>
             <TouchableOpacity style={[styles.button, styles.acceptButton]} onPress={handleAccept}>
-              <Image source={require('images/tick.png')} style={styles.icon}/>
+              <Image source={require('images/tick.png')} style={styles.icon} />
               <Text style={styles.buttonText}>Accept Order</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, styles.rejectButton]} onPress={handleReject}>
-              <Image source={require('images/x.png')} style={styles.icon}/>
+              <Image source={require('images/x.png')} style={styles.icon} />
               <Text style={styles.buttonText}>Reject</Text>
             </TouchableOpacity>
           </View>
@@ -66,9 +66,12 @@ const OrderItem = ({ order, navigation }) => {
               <View>
                 <Text >Update Status</Text>
               </View>
-              <StatusToggle style={styles.toggle}/>
+              <StatusToggle style={styles.toggle}
+                option1='Food preparing'
+                option2='Ready for pickup'
+              />
             </View>
-            <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, {marginHorizontal: 8}]}/>
+            <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, { marginHorizontal: 8 }]} />
           </>
         )}
       </View>
@@ -118,7 +121,7 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 10,
     marginBottom: 10,

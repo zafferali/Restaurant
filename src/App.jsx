@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, StatusBar} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import { AuthStackNavigator } from './navigation/AuthStackNavigator';

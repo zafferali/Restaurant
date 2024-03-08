@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Animated } from 'react-native';
-import Menu from 'components/Menu';
+import { View, StyleSheet, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from 'constants/colors';
 
-const Layout = ({ children, showMenu, isScrollable }) => {
+const Layout = ({ children, isScrollable }) => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
 
   // Threshold to determine scroll direction
@@ -21,14 +20,13 @@ const Layout = ({ children, showMenu, isScrollable }) => {
         setVisible(currentScrollY <= lastScrollY || currentScrollY < 100);
         setLastScrollY(currentScrollY);
       },
-      useNativeDriver: true, // Set to true if you want to offload animations to native thread
+      useNativeDriver: true, // Set to true to offload animations to native thread
     },
   );
   const ContentComponent = isScrollable ? Animated.ScrollView : View;
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Screen content */}
       <ContentComponent style={styles.content} onScroll={handleScroll} scrollEventThrottle={16}>
         {children}
       </ContentComponent>
@@ -43,27 +41,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: -30,
   },
-  // header: {
-  //   flex: 1,
-  //   flexDirection: 'row',
-  //   position: 'absolute',
-  //   top: 50,
-  //   left: 20,
-  //   gap: 10,
-  //   zIndex: 10,
-  // },
-  // backButton: {
-  //   width: 46,
-  //   height: 46,
-  //   zIndex: 10,
-  //   flexDirection: 'row',
-  // },
-
-  // bigTitle: {
-  //   fontSize: 38,
-  //   color: 'black',
-  //   fontWeight: '700',
-  // },
   orderNum: {
     color: colors.theme,
   },

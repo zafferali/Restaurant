@@ -44,25 +44,25 @@ export const MenuStackScreen = () => (
 
 export const OrderListStackScreen = () => (
 
-<OrderListStack.Navigator
-    screenOptions={{
-        headerTitleStyle: styles.headerTitle,
-        headerBackTitleVisible: false, // Hides the back title next to the back button (iOS)
-        gestureEnabled: true, // Enable gesture navigation
-        ...TransitionPresets.SlideFromRightIOS,
-    }}
->
-    <OrderListStack.Screen
-        name="OrderListScreen"
-        component={OrderListScreen}
-        options={{ title: 'Orders' }}
-    />
-    <OrderListStack.Screen
-        name="OrderDetailScreen"
-        component={OrderDetailScreen}
-        options={{ title: 'Order #301', headerTitleStyle: styles.headerSmallTitle}}
-    />
-</OrderListStack.Navigator>
+    <OrderListStack.Navigator
+        screenOptions={{
+            headerTitleStyle: styles.headerTitle,
+            headerBackTitleVisible: false, // Hides the back title next to the back button (iOS)
+            gestureEnabled: true, // Enable gesture navigation
+            ...TransitionPresets.SlideFromRightIOS,
+        }}
+    >
+        <OrderListStack.Screen
+            name="OrderListScreen"
+            component={OrderListScreen}
+            options={{ title: 'Orders' }}
+        />
+        <OrderListStack.Screen
+            name="OrderDetailScreen"
+            component={OrderDetailScreen}
+            options={{ title: 'Order #301', headerTitleStyle: styles.headerSmallTitle }}
+        />
+    </OrderListStack.Navigator>
 );
 
 
@@ -74,15 +74,15 @@ export const ProfileStackScreen = () => (
             ...TransitionPresets.SlideFromRightIOS,
         }}
     >
-        <ProfileStack.Screen 
-            name="ProfileScreen" 
+        <ProfileStack.Screen
+            name="ProfileScreen"
             component={ProfileScreen}
             options={{ headerShown: false }}
         />
-        <ProfileStack.Screen 
-            name="SettingsScreen" 
+        <ProfileStack.Screen
+            name="SettingsScreen"
             component={SettingsScreen}
-            options={{ title: 'Settings', headerTitleStyle: styles.headerSmallTitle}}
+            options={{ title: 'Settings', headerTitleStyle: styles.headerSmallTitle }}
         />
     </ProfileStack.Navigator>
 );
@@ -93,12 +93,12 @@ export const BusinessStackScreen = () => (
             headerTitleStyle: styles.headerTitle,
             gestureEnabled: true, // Enable gesture navigation
             ...TransitionPresets.SlideFromRightIOS,
-    }}
+        }}
     >
-        <BusinessStack.Screen 
-            name="BusinessScreen" 
-            component={BusinessScreen} 
-            options={{ title: 'Business'}}
+        <BusinessStack.Screen
+            name="BusinessScreen"
+            component={BusinessScreen}
+            options={{ title: 'Business' }}
         />
     </BusinessStack.Navigator>
 );
