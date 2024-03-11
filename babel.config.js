@@ -13,7 +13,7 @@ module.exports = {
           images:'./src/assets/images',
           constants: './src/constants',
           globals: './src/globals',
-          // Add more aliases here
+          utils: './src/utils',
         },
         extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
       },
