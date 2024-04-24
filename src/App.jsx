@@ -13,11 +13,11 @@ const customTextProps = {
 setCustomText(customTextProps);
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   return (
     <>
-      <StatusBar backgroundColor="transparent" translucent={true} />
+      <StatusBar backgroundColor="transparent" translucent={false} />
       <NavigationContainer>
         {isAuthenticated ? <BottomTabNavigator /> : <AuthStackNavigator />}
       </NavigationContainer>

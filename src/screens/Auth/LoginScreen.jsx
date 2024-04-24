@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import { Dimensions, View, Image, Text, TextInput, ImageBackground, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
-import colors from 'constants/colors';
+import { View, Image, Text, TextInput, ImageBackground, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
-const sphereSize = width * 2;
 
 const LoginScreen = ({ navigation }) => {
-  const [vendorCode, setVendorCode] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
@@ -29,20 +26,12 @@ const LoginScreen = ({ navigation }) => {
           />
           <Text style={styles.subtitle}>Partner companion</Text>
         </View>
-
-        {/* Semi-transparent overlay View */}
-
-        <View style={styles.halfSphere} />
-        <Image
-          source={require('images/ellipse.png')}
-          style={styles.blurredOverlay}
-        />
         <View style={styles.form}>
           <TextInput
-            placeholder="Vendor code"
+            placeholder="Email"
             placeholderTextColor="rgba(255, 255, 255, 0.4)"
-            value={vendorCode}
-            onChangeText={setVendorCode}
+            value={email}
+            onChangeText={setEmail}
             style={styles.input}
           />
           <TextInput
@@ -59,7 +48,6 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.termsText}>  By signing up, you agree to the</Text>
           <Text style={styles.linkText}>Terms & Policy & Privacy Policy</Text>
         </View>
-        {/* </View> */}
       </ImageBackground>
     </KeyboardAvoidingView>
   );
@@ -81,26 +69,10 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 20,
+    fontWeight: 'bold',
     color: '#C2C2C2',
     alignSelf: 'center',
     marginBottom: 40,
-  },
-  halfSphere: {
-    position: 'absolute',
-    width: sphereSize,
-    height: sphereSize,
-    borderRadius: sphereSize / 2,
-    backgroundColor: 'rgba(46, 94, 130, 0.8)',
-    bottom: -width * 0.65,
-    left: -width * 0.5,
-  },
-  blurredOverlay: {
-    position: 'absolute',
-    width: sphereSize,
-    height: sphereSize,
-    borderRadius: sphereSize / 2,
-    bottom: -width * 0.85,
-    left: -width * 0.5,
   },
   form: {
     flex: 1,
@@ -120,9 +92,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     fontSize: 16,
-  },
-  button: {
-
   },
   loginButton: {
     backgroundColor: 'black',

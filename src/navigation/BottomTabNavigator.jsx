@@ -20,26 +20,7 @@ function BottomTabNavigator() {
       }}
     >
       {/* Home */}
-      {/* <Tab.Screen name="Home" component={MenuStackScreen}
-        options={({ route }) => ({
-          tabBarStyle: {
-            display: getFocusedRouteNameFromRoute(route) === 'OrderDetailScreen' ? 'none' : 'flex',
-            height: 70,
-          },
-          tabBarIcon: ({ focused }) => (
-            <View style={styles.menuItem}>
-              <Image
-                source={require('images/home-icon.png')}
-                resizeMode='contain'
-                style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]} />
-              <Text style={[styles.menuText, { color: focused ? colors.theme : colors.textLight }]}>Home</Text>
-            </View>
-          )
-        })}
-      /> */}
-
-      {/* Orders */}
-      <Tab.Screen name="Orders" component={OrderListStackScreen}
+      <Tab.Screen name="Home" component={OrderListStackScreen}
         options={({ route }) => ({
           tabBarStyle: {
             display: getFocusedRouteNameFromRoute(route) === 'OrderDetailScreen' ? 'none' : 'flex',
@@ -51,7 +32,7 @@ function BottomTabNavigator() {
                 source={require('images/orders-icon.png')}
                 resizeMode='contain'
                 style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]} />
-              <Text style={[styles.menuText, { color: focused ? colors.theme : colors.textLight }]}>Orders</Text>
+              <Text style={[styles.menuText, { color: focused ? colors.theme : colors.textLight }]}>Home</Text>
             </View>
           )
         })}
@@ -71,6 +52,26 @@ function BottomTabNavigator() {
           )
         }}
       />
+
+      {/* Menu */}
+      <Tab.Screen name="Menu" component={MenuStackScreen}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getFocusedRouteNameFromRoute(route) === 'OrderDetailScreen' ? 'none' : 'flex',
+            height: 70,
+          },
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.menuItem}>
+              <Image
+                source={require('images/home-icon.png')}
+                resizeMode='contain'
+                style={[styles.menuIcon, { tintColor: focused ? colors.theme : colors.textLight }]} />
+              <Text style={[styles.menuText, { color: focused ? colors.theme : colors.textLight }]}>Menu</Text>
+            </View>
+          )
+        })}
+      />
+
 
       {/* Profile */}
       <Tab.Screen name="Profile" component={ProfileStackScreen}
