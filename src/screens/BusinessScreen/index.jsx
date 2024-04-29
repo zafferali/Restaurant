@@ -1,20 +1,54 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native'
-import React, { useState } from 'react'
-import Layout from 'common/Layout'
-import { GlobalStyles } from 'constants/GlobalStyles'
-import colors from 'constants/colors'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import firestore from '@react-native-firebase/firestore';
+import Layout from 'common/Layout';
+import { GlobalStyles } from 'constants/GlobalStyles';
+import colors from 'constants/colors';
+
+const getStartOfDay = () => {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  return start;
+};
+
+const getStartOfWeek = () => {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const day = start.getDay();
+  const diff = start.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+  start.setDate(diff);
+  return start;
+};
 
 
-const DATA = [
-  { id: '1', orderNumber: '#13453', time: '13:12', amount: '₹13000' },
-  { id: '2', orderNumber: '#13454', time: '15:08', amount: '₹17000' },
-  { id: '3', orderNumber: '#13455', time: '18:34', amount: '₹1500' },
-];
+const getStartOfMonth = () => {
+  const start = new Date();
+  start.setDate(1);
+  start.setHours(0, 0, 0, 0);
+  return start;
+};
 
-const Item = ({ orderNumber, time, amount }) => (
+const formatTime = (date) => {
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
+
+const formatDateAndTime = (date) => {
+  const day = date.getDate().toString().padStart(2, '0');
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const month = monthNames[date.getMonth()];
+  const formattedTime = formatTime(date);
+  return `${day} ${month} ${formattedTime}`;
+};
+
+
+
+
+const Item = ({ orderNum, time, amount }) => (
   <View style={styles.item}>
     <View style={styles.leftColumn}>
-      <Text style={styles.orderNumber}>{orderNumber}</Text>
+      <Text style={styles.orderNum}>#{orderNum}</Text>
       <Text style={styles.time}>{time}</Text>
     </View>
     <Text style={styles.amount}>{amount}</Text>
@@ -23,8 +57,67 @@ const Item = ({ orderNumber, time, amount }) => (
 
 const Separator = () => <View style={styles.separator} />;
 
-const BusinessScreen = ({ navigation}) => {
+const BusinessScreen = ({ navigation }) => {
   const [activePeriod, setActivePeriod] = useState('Day');
+  const [orders, setOrders] = useState([]);
+  const [totalAmount, setTotalAmount] = useState('₹0');
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      let startOfPeriod;
+      let endOfPeriod;
+      if (activePeriod === 'Day') {
+        startOfPeriod = firestore.Timestamp.fromDate(getStartOfDay());
+        endOfPeriod = firestore.Timestamp.fromDate(new Date(getStartOfDay().getTime() + 86400000)); // +1 day in ms
+      } else if (activePeriod === 'Week') {
+        startOfPeriod = firestore.Timestamp.fromDate(getStartOfWeek());
+        endOfPeriod = firestore.Timestamp.fromDate(new Date(getStartOfWeek().getTime() + 604800000)); // +7 days in ms
+      } else if (activePeriod === 'Month') {
+        startOfPeriod = firestore.Timestamp.fromDate(getStartOfMonth());
+        const nextMonth = new Date(getStartOfMonth());
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+        endOfPeriod = firestore.Timestamp.fromDate(nextMonth);
+      }
+  
+      let query = firestore().collection('orders').where('timeStamps.orderPicked', '>=', startOfPeriod);
+      if (endOfPeriod) {
+        query = query.where('timeStamps.orderPicked', '<', endOfPeriod);
+      }
+  
+      const snapshot = await query.get();
+  
+      const fetchedOrders = [];
+      let newTotal = 0;
+  
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const orderTime = data.timeStamps.orderPicked.toDate();
+        let timeString;
+  
+        if (activePeriod === 'Day') {
+          timeString = `${formatTime(orderTime)}`;
+        } else {
+          timeString = formatDateAndTime(orderTime);
+        }
+  
+        fetchedOrders.push({
+          id: doc.id,
+          orderNum: data.orderNum,
+          time: timeString,
+          amount: `₹${data.totalPrice}`
+        });
+        newTotal += Number(data.totalPrice);
+      });
+  
+      setOrders(fetchedOrders);
+      setTotalAmount(`₹${newTotal.toLocaleString()}`);
+    };
+  
+    fetchOrders();
+  }, [activePeriod]);
+  
+  
+  
 
   return (
     <Layout
@@ -33,7 +126,7 @@ const BusinessScreen = ({ navigation}) => {
     >
       <View style={[GlobalStyles.lightBorder, styles.topSection]}>
         <View>
-          <Text style={styles.totalAmount}>₹42000</Text>
+          <Text style={styles.totalAmount}>{totalAmount}</Text>
           <Text style={styles.received}>
             {activePeriod === 'Day' ? 'Received today' :
               activePeriod === 'Week' ? 'Received this week' :
@@ -71,10 +164,22 @@ const BusinessScreen = ({ navigation}) => {
 
       <View style={styles.listContainer}>
         <FlatList
-          data={DATA}
-          renderItem={({ item }) => <Item orderNumber={item.orderNumber} time={`Received at ${item.time}`} amount={item.amount} />}
+          data={orders}
+          renderItem={({ item }) => (
+            <Item
+              orderNum={item.orderNum}
+              time={`${activePeriod === 'Day' ? 'Received at' : 'Received on'} ${item.time}`}
+              amount={item.amount}
+            />
+          )}
           keyExtractor={item => item.id}
-          ListHeaderComponent={<Text style={styles.header}>Today</Text>}
+          ListHeaderComponent={
+            <Text style={styles.header}>
+              {activePeriod === 'Day' ? 'Today' :
+              activePeriod === 'Week' ? 'This Week' :
+              'This Month'}
+            </Text>
+          }
           ItemSeparatorComponent={Separator}
         />
       </View>
@@ -152,7 +257,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
-  orderNumber: {
+  orderNum: {
     fontWeight: 'bold',
     fontSize: 16,
     color: 'black'
