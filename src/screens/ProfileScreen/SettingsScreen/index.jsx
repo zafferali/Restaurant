@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
-import colors from '../../../constants/colors';
+import colors from 'constants/colors';
+import Layout from 'common/Layout';
 
-const ProfileEditScreen = () => {
+const SettingsScreen = ({navigation}) => {
   const [name, setName] = useState('Kanchana Naidu'); // Initial name
   const [profileImage, setProfileImage] = useState(null); // Initial image state
 
@@ -38,31 +39,36 @@ const ProfileEditScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.imageUploadContainer} onPress={handleProfileImagePick}>
-        {profileImage ? (
-          <Image source={{ uri: profileImage.uri }} style={styles.profileImage} />
-        ) : (
-          <Image style={styles.uploadIcon} source={require('images/upload.png')} />
-        )}
-      </TouchableOpacity>
+    <Layout
+      backTitle='Settings'
+      navigation={navigation}
+    >
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.imageUploadContainer} onPress={handleProfileImagePick}>
+          {profileImage ? (
+            <Image source={{ uri: profileImage.uri }} style={styles.profileImage} />
+          ) : (
+            <Image style={styles.uploadIcon} source={require('images/upload.png')} />
+          )}
+        </TouchableOpacity>
 
-      <Text style={styles.label}>Name</Text>
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={handleNameChange}
-      />
+        <Text style={styles.label}>Name</Text>
+        <TextInput
+          style={styles.input}
+          value={name}
+          onChangeText={handleNameChange}
+        />
 
-      <Text style={styles.label}>Phone Number</Text>
-      <View style={styles.phoneNum}>
-        <Text style={styles.phoneNumText}>9894565342</Text>
+        <Text style={styles.label}>Phone Number</Text>
+        <View style={styles.phoneNum}>
+          <Text style={styles.phoneNumText}>9894565342</Text>
+        </View>
+
+        {/* <TouchableOpacity style={styles.button} onPress={handleSave}>
+          <Text style={styles.buttonText}>Save Changes</Text>
+        </TouchableOpacity> */}
       </View>
-
-      {/* <TouchableOpacity style={styles.button} onPress={handleSave}>
-        <Text style={styles.buttonText}>Save Changes</Text>
-      </TouchableOpacity> */}
-    </View>
+    </Layout>
   );
 };
 
@@ -70,7 +76,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 60,
+    paddingTop: 100,
     paddingHorizontal: 40,
     backgroundColor: 'white',
   },
@@ -136,4 +142,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileEditScreen;
+export default SettingsScreen;

@@ -1,19 +1,43 @@
 import React, { useState } from 'react';
-import { View, Image, Text, TextInput, ImageBackground, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
-
+import { View, Image, Text, TextInput, ImageBackground, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
+import auth from '@react-native-firebase/auth';
+import { login } from '../../redux/slices/authenticationSlice';
+import { useDispatch } from 'react-redux';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch()
 
-  const handleLogin = () => {
-    navigation.navigate('OrderListScreen')
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter all fields');
+      return;
+    }
+
+    try {
+      console.log('ep', email, password)
+      let response = await auth().signInWithEmailAndPassword(email, password);
+      if (response && response.user) {
+        console.log('log', response.user.uid)
+        dispatch(login(response.user.uid))
+      }
+    } catch (e) {
+      if (e.code === 'auth/user-not-found') {
+        Alert.alert('Error', 'No user found for this email');
+      } else if (e.code === 'auth/wrong-password') {
+        Alert.alert('Error', 'Wrong password provided');
+      } else {
+        Alert.alert('Error', e.message);
+      }
+    }
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+    style={styles.container}
     >
       <ImageBackground
         source={require('images/main.png')}
@@ -24,12 +48,13 @@ const LoginScreen = ({ navigation }) => {
             source={require('images/logo.png')}
             style={styles.logo}
           />
-          <Text style={styles.subtitle}>Partner companion</Text>
+          <Text style={styles.subtitle}>Partner Companion</Text>
         </View>
         <View style={styles.form}>
           <TextInput
             placeholder="Email"
             placeholderTextColor="rgba(255, 255, 255, 0.4)"
+            autoCorrect={false}
             value={email}
             onChangeText={setEmail}
             style={styles.input}
@@ -39,13 +64,15 @@ const LoginScreen = ({ navigation }) => {
             placeholderTextColor="rgba(255, 255, 255, 0.4)"
             secureTextEntry
             value={password}
+            onSubmitEditing={handleLogin}
+            returnKeyType="go"
             onChangeText={setPassword}
             style={styles.input}
           />
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
-          <Text style={styles.termsText}>  By signing up, you agree to the</Text>
+          <Text style={styles.termsText}>By signing up, you agree to the</Text>
           <Text style={styles.linkText}>Terms & Policy & Privacy Policy</Text>
         </View>
       </ImageBackground>
@@ -87,6 +114,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 5,
     backgroundColor: '#00000060',
+    color: 'white',
     borderRadius: 8,
     height: 54,
     padding: 10,

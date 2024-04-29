@@ -23,21 +23,19 @@ export const MenuStackScreen = () => (
 
     <MenuStack.Navigator
         screenOptions={{
-            headerTitleStyle: styles.headerTitle,
             headerBackTitleVisible: false, // Hides the back title next to the back button (iOS)
             gestureEnabled: true, // Enable gesture navigation
             ...TransitionPresets.SlideFromRightIOS,
+            headerShown: false,
         }}
     >
         <MenuStack.Screen
             name="MenuScreen"
             component={MenuScreen}
-            options={{ title: 'Menu' }}
         />
         <MenuStack.Screen
             name="EditItemScreen"
             component={EditItemScreen}
-            options={{ title: 'Edit Item', headerTitleStyle: styles.headerSmallTitle }}
         />
     </MenuStack.Navigator>
 );
@@ -46,21 +44,19 @@ export const OrderListStackScreen = () => (
 
     <OrderListStack.Navigator
         screenOptions={{
-            headerTitleStyle: styles.headerTitle,
             headerBackTitleVisible: false, // Hides the back title next to the back button (iOS)
             gestureEnabled: true, // Enable gesture navigation
             ...TransitionPresets.SlideFromRightIOS,
+            headerShown: false,
         }}
     >
         <OrderListStack.Screen
             name="OrderListScreen"
             component={OrderListScreen}
-            options={{ title: 'Orders' }}
         />
         <OrderListStack.Screen
             name="OrderDetailScreen"
             component={OrderDetailScreen}
-            options={{ title: 'Order #301', headerTitleStyle: styles.headerSmallTitle }}
         />
     </OrderListStack.Navigator>
 );
@@ -69,9 +65,9 @@ export const OrderListStackScreen = () => (
 export const ProfileStackScreen = () => (
     <ProfileStack.Navigator
         screenOptions={{
-            headerTitleStyle: styles.headerTitle,
             gestureEnabled: true, // Enable gesture navigation
             ...TransitionPresets.SlideFromRightIOS,
+            headerShown: false,
         }}
     >
         <ProfileStack.Screen
@@ -82,7 +78,6 @@ export const ProfileStackScreen = () => (
         <ProfileStack.Screen
             name="SettingsScreen"
             component={SettingsScreen}
-            options={{ title: 'Settings', headerTitleStyle: styles.headerSmallTitle }}
         />
     </ProfileStack.Navigator>
 );
@@ -90,9 +85,9 @@ export const ProfileStackScreen = () => (
 export const BusinessStackScreen = () => (
     <BusinessStack.Navigator
         screenOptions={{
-            headerTitleStyle: styles.headerTitle,
             gestureEnabled: true, // Enable gesture navigation
             ...TransitionPresets.SlideFromRightIOS,
+            headerShown: false,
         }}
     >
         <BusinessStack.Screen
@@ -105,11 +100,11 @@ export const BusinessStackScreen = () => (
 
 const styles = StyleSheet.create({
     headerTitle: {
-        fontSize: 38,
+        fontSize: 30,
         fontWeight: 'bold',
     },
     headerSmallTitle: {
-        fontSize: 32,
+        fontSize: 24,
         fontWeight: 'bold',
     }
 })

@@ -8,7 +8,7 @@ import StatusToggle from './StatusToggle';
 
 const OrderItem = ({ order, navigation }) => {
   const [variant, setVariant] = useState('acceptReject'); // default variant
-
+  console.log('hello',order.length)
   const handleAccept = () => {
     console.log('Order Accepted:', order.id);
     setVariant('manage'); // Change to 'manage' variant
@@ -19,62 +19,32 @@ const OrderItem = ({ order, navigation }) => {
   };
 
   const handleManage = () => {
-    navigation.navigate('OrderDetailScreen', { orderNum: 'Order #301' })
+    navigation.navigate('OrderDetailScreen', { orderId: order.id })
   };
 
-  // Component to render the update status buttons
-  const UpdateStatusButtons = () => (
-    <View style={styles.updateStatusContainer}>
-      <TouchableOpacity style={styles.updateButton}>
-        <Text>Food Preparing</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.updateButton}>
-        <Text>Ready for Pickup</Text>
-      </TouchableOpacity>
-    </View>
-  );
 
   return (
     <View style={styles.orderItemContainer}>
-      {/* Top row with Order # and location */}
+      {/* Top row with Order # and locatio */}
       <View style={styles.topRow}>
-        <OrderItemHeader orderNumber="#301" location="IIT Delhi" />
+        <OrderItemHeader orderNumber={`#${order.orderNum}`} deliveryTime={order.deliveryTime}/>
       </View>
 
       {/* Middle row with order details */}
       <View style={styles.middleRow}>
-        <ItemWithQty style={styles.item} itemName={"Pizza"} itemQty={"2"} />
-        <ItemWithQty style={styles.item} itemName={"Brownie"} itemQty={"1"} />
+        {order.items.map((item, index) => <ItemWithQty key={index} style={styles.item} itemName={item.name} itemQty={item.quantity} />)}
       </View>
 
       {/* Bottom row with action buttons or update status buttons */}
-      <View style={styles.bottomRow}>
-        {variant === 'acceptReject' ? (
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={[styles.button, styles.acceptButton]} onPress={handleAccept}>
-              <Image source={require('images/tick.png')} style={styles.icon} />
-              <Text style={styles.buttonText}>Accept Order</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.rejectButton]} onPress={handleReject}>
-              <Image source={require('images/x.png')} style={styles.icon} />
-              <Text style={styles.buttonText}>Reject</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
           <>
             <View style={styles.statusContainer}>
               <View>
-                <Text >Update Status</Text>
+                <Text style={styles.updateText}>Update Status</Text>
               </View>
-              <StatusToggle style={styles.toggle}
-                option1='Food Preparing'
-                option2='Ready for Pickup'
-              />
+              <StatusToggle style={styles.toggle} orderId={order.id}/>
             </View>
             <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, { marginHorizontal: 8 }]} />
           </>
-        )}
-      </View>
     </View>
   );
 };
@@ -103,6 +73,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 5,
   },
+  updateText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'gray',
+  },
   manageButton: {
     backgroundColor: 'lightgray',
     paddingHorizontal: 20,
@@ -123,9 +98,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: 10,
-    marginBottom: 10,
-    gap: 10,
+    marginHorizontal: 4,
+    marginVertical: 10,
+    gap: 4,
   },
   statusText: {
     fontSize: 12,

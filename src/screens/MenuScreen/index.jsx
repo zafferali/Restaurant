@@ -6,9 +6,7 @@ const MenuScreen = ({ navigation }) => {
 
   return (
     <Layout
-      showMenu
-      bigTitle="Orders"
-      onBackPress={() => console.log('Back button pressed')}
+      title='Menu'
       navigation={navigation}
     >
       <View>

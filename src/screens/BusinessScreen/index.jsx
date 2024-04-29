@@ -29,6 +29,7 @@ const BusinessScreen = ({ navigation}) => {
   return (
     <Layout
       navigation={navigation}
+      title='Business'
     >
       <View style={[GlobalStyles.lightBorder, styles.topSection]}>
         <View>
