@@ -21,7 +21,7 @@ const ProfileScreen = ({navigation}) => {
   };
 
   const handleLogout =  () => {
-    Alert.alert('Logout', 'Are you sure you wamt to logout', [
+    Alert.alert('Logout', 'Are you sure you want to logout', [
       {
         text: 'Cancel',
         onPress: () => console.log('Cancel Pressed'),

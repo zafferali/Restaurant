@@ -1,9 +1,85 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Switch, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import Layout from 'common/Layout';
 import { GlobalStyles } from 'constants/GlobalStyles';
 import colors from 'constants/colors';
+import CustomButton from 'common/CustomButton';
+import { useSelector, useDispatch } from 'react-redux';
+import moment from 'moment-timezone';
+import { toggleLoading } from '../../redux/slices/uiSlice';
+
+const Availability = ({restaurantId, navigation}) => {
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  useEffect(() => {
+    const fetchRestaurantAvailability = () => {
+      const now = moment.tz('Asia/Kolkata'); // Current time in IST
+      const todayDate = moment.tz(new Date(), 'Asia/Kolkata').startOf('day'); // Start of the day in IST      
+      console.log("Now in IST:", now.format('YYYY-MM-DD HH:mm:ss Z'));
+      console.log("Today's Date in IST:", todayDate.format('YYYY-MM-DD HH:mm:ss Z'));
+
+  
+      const docRef = firestore().collection('restaurants').doc(restaurantId);
+      const unsubscribe = docRef.onSnapshot((snapshot) => {
+        const restaurantData = snapshot.data();
+  
+        // Check general availability first
+        const dayOfWeek = now.format('dddd').toLowerCase();
+        const currentDay = restaurantData.availability.general ? restaurantData.availability.general[dayOfWeek] : null;
+        if (currentDay && currentDay.isOpen) {
+          const from = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${currentDay.from}`, 'Asia/Kolkata');
+          const until = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${currentDay.until}`, 'Asia/Kolkata');
+          setIsEnabled(now.isBetween(from, until, null, '[]'));
+        } else {
+          setIsEnabled(false);
+        }
+  
+        // Override with occasional availability if there's a match
+        const occasions = restaurantData.availability.occasional;
+        if (occasions && occasions.length > 0) {
+          occasions.forEach(occasion => {
+            const occasionDate = moment(occasion.date.toDate()).tz('Asia/Kolkata').startOf('day');
+            if (todayDate.isSame(occasionDate, 'day')) {
+              console.log('inse', todayDate)
+              const fromTime = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${occasion.from}`, 'Asia/Kolkata');
+              const untilTime = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${occasion.until}`, 'Asia/Kolkata');
+              setIsEnabled(occasion.isOpen && now.isBetween(fromTime, untilTime, null, '[]'));
+            }
+          });
+        }
+      });
+  
+      return () => unsubscribe();
+    };
+  
+    const unsubscribe = fetchRestaurantAvailability();
+    return () => {
+      unsubscribe();
+    };
+  }, [restaurantId]);
+  const toggleSwitch = () => {
+    // Toggle switch logic if needed
+  };
+
+  return (
+    <View style={[GlobalStyles.lightBorder, { paddingVertical: 20 }]}>
+      <View style={styles.topSection}>
+        <Text style={[styles.received, { fontSize: 16, color: isEnabled ? colors.theme : colors.danger }]}>
+          {isEnabled ? 'Restaurant Open' : 'Restaurant Closed'}
+        </Text>
+        <Switch
+          trackColor={{ false: colors.warning, true: colors.theme }}
+          thumbColor={isEnabled ? colors.lightGray : colors.danger}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleSwitch}
+          value={isEnabled}
+        />
+      </View>
+      <CustomButton title='Manage Schedule' onPress={() => navigation.navigate('ManageScheduleScreen')} style={{ marginTop: 30 }} />
+    </View>
+  );
+};
 
 const getStartOfDay = () => {
   const start = new Date();
@@ -43,8 +119,6 @@ const formatDateAndTime = (date) => {
 };
 
 
-
-
 const Item = ({ orderNum, time, amount }) => (
   <View style={styles.item}>
     <View style={styles.leftColumn}>
@@ -58,72 +132,84 @@ const Item = ({ orderNum, time, amount }) => (
 const Separator = () => <View style={styles.separator} />;
 
 const BusinessScreen = ({ navigation }) => {
+  const restaurantId = useSelector(state => state.authentication.restaurantId);
+  const isLoading = useSelector(state => state.ui.loading)
+  const dispatch = useDispatch();
   const [activePeriod, setActivePeriod] = useState('Day');
   const [orders, setOrders] = useState([]);
   const [totalAmount, setTotalAmount] = useState('₹0');
 
   useEffect(() => {
     const fetchOrders = async () => {
-      let startOfPeriod;
-      let endOfPeriod;
-      if (activePeriod === 'Day') {
-        startOfPeriod = firestore.Timestamp.fromDate(getStartOfDay());
-        endOfPeriod = firestore.Timestamp.fromDate(new Date(getStartOfDay().getTime() + 86400000)); // +1 day in ms
-      } else if (activePeriod === 'Week') {
-        startOfPeriod = firestore.Timestamp.fromDate(getStartOfWeek());
-        endOfPeriod = firestore.Timestamp.fromDate(new Date(getStartOfWeek().getTime() + 604800000)); // +7 days in ms
-      } else if (activePeriod === 'Month') {
-        startOfPeriod = firestore.Timestamp.fromDate(getStartOfMonth());
-        const nextMonth = new Date(getStartOfMonth());
-        nextMonth.setMonth(nextMonth.getMonth() + 1);
-        endOfPeriod = firestore.Timestamp.fromDate(nextMonth);
-      }
-  
-      let query = firestore().collection('orders').where('timeStamps.orderPicked', '>=', startOfPeriod);
-      if (endOfPeriod) {
-        query = query.where('timeStamps.orderPicked', '<', endOfPeriod);
-      }
-  
-      const snapshot = await query.get();
-  
-      const fetchedOrders = [];
-      let newTotal = 0;
-  
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const orderTime = data.timeStamps.orderPicked.toDate();
-        let timeString;
-  
+      dispatch(toggleLoading())
+
+      try {
+        let startOfPeriod;
+        let endOfPeriod;
         if (activePeriod === 'Day') {
-          timeString = `${formatTime(orderTime)}`;
-        } else {
-          timeString = formatDateAndTime(orderTime);
+          startOfPeriod = firestore.Timestamp.fromDate(getStartOfDay());
+          endOfPeriod = firestore.Timestamp.fromDate(new Date(getStartOfDay().getTime() + 86400000)); // +1 day in ms
+        } else if (activePeriod === 'Week') {
+          startOfPeriod = firestore.Timestamp.fromDate(getStartOfWeek());
+          endOfPeriod = firestore.Timestamp.fromDate(new Date(getStartOfWeek().getTime() + 604800000)); // +7 days in ms
+        } else if (activePeriod === 'Month') {
+          startOfPeriod = firestore.Timestamp.fromDate(getStartOfMonth());
+          const nextMonth = new Date(getStartOfMonth());
+          nextMonth.setMonth(nextMonth.getMonth() + 1);
+          endOfPeriod = firestore.Timestamp.fromDate(nextMonth);
         }
-  
-        fetchedOrders.push({
-          id: doc.id,
-          orderNum: data.orderNum,
-          time: timeString,
-          amount: `₹${data.totalPrice}`
+
+        let query = firestore().collection('orders')
+          .where('restaurant', '==', firestore().doc(`restaurants/${restaurantId}`))
+          .where('timeStamps.orderPicked', '>=', startOfPeriod);
+
+        if (endOfPeriod) {
+          query = query.where('timeStamps.orderPicked', '<', endOfPeriod);
+        }
+
+        const snapshot = await query.get();
+
+        const fetchedOrders = [];
+        let newTotal = 0;
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const orderTime = data.timeStamps.orderPicked.toDate();
+          let timeString;
+
+          if (activePeriod === 'Day') {
+            timeString = `${formatTime(orderTime)}`;
+          } else {
+            timeString = formatDateAndTime(orderTime);
+          }
+
+          fetchedOrders.push({
+            id: doc.id,
+            orderNum: data.orderNum,
+            time: timeString,
+            amount: `₹${data.totalPrice}`
+          });
+          newTotal += Number(data.totalPrice);
         });
-        newTotal += Number(data.totalPrice);
-      });
-  
-      setOrders(fetchedOrders);
-      setTotalAmount(`₹${newTotal.toLocaleString()}`);
+
+        setOrders(fetchedOrders);
+        setTotalAmount(`₹${newTotal.toLocaleString()}`);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      } finally {
+        dispatch(toggleLoading())
+      }
     };
-  
+
     fetchOrders();
-  }, [activePeriod]);
-  
-  
-  
+  }, [activePeriod, restaurantId]);
 
   return (
     <Layout
       navigation={navigation}
       title='Business'
     >
+      <Availability restaurantId={restaurantId} navigation={navigation}/>
       <View style={[GlobalStyles.lightBorder, styles.topSection]}>
         <View>
           <Text style={styles.totalAmount}>{totalAmount}</Text>
@@ -161,7 +247,7 @@ const BusinessScreen = ({ navigation }) => {
       <View style={{ marginTop: 20}}>
         <Text style={styles.received}>Summary</Text>
       </View>
-
+      {isLoading? <ActivityIndicator size="large" color={colors.theme} />:
       <View style={styles.listContainer}>
         <FlatList
           data={orders}
@@ -181,8 +267,13 @@ const BusinessScreen = ({ navigation }) => {
             </Text>
           }
           ItemSeparatorComponent={Separator}
+          ListEmptyComponent={() => (
+            <View style={styles.item}>
+              <Text>No orders</Text>
+            </View>
+          )}
         />
-      </View>
+      </View>}
     </Layout>
   )
 }
@@ -204,29 +295,29 @@ const styles = StyleSheet.create({
   },
   received: {
     fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
+    fontSize: 14,
     color: colors.theme
   },
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: colors.lightGray, // Non-active background color
+    backgroundColor: colors.lightGray,
     borderRadius: 20,
     padding: 4,
   },
   toggleButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 18, // Slightly less than container to fit inside padding
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    borderRadius: 18, 
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent', // Default non-active color
+    backgroundColor: 'transparent', 
   },
   active: {
-    backgroundColor: colors.theme, // Active background color
+    backgroundColor: colors.theme,
     color: 'white',
   },
   toggleText: {
-    color: colors.theme, // Text color
+    color: colors.theme,
     fontSize: 12,
     fontWeight: '600'
   },

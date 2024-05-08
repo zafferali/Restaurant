@@ -12,6 +12,7 @@ import ProfileScreen from 'screens/ProfileScreen';
 import SettingsScreen from 'screens/ProfileScreen/SettingsScreen';
 
 import BusinessScreen from 'screens/BusinessScreen';
+import ManageScheduleScreen from 'screens/BusinessScreen/ManageScheduleScreen';
 
 const MenuStack = createStackNavigator();
 const OrderListStack = createStackNavigator();
@@ -93,7 +94,10 @@ export const BusinessStackScreen = () => (
         <BusinessStack.Screen
             name="BusinessScreen"
             component={BusinessScreen}
-            options={{ title: 'Business' }}
+        />
+        <BusinessStack.Screen
+            name="ManageScheduleScreen"
+            component={ManageScheduleScreen}
         />
     </BusinessStack.Navigator>
 );

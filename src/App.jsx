@@ -37,8 +37,8 @@ function App() {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('Notification received in the foreground:', remoteMessage);
       Alert.alert(
-        remoteMessage.notification.title, // assuming the notification payload contains a title
-        remoteMessage.notification.body,  // and a body
+        remoteMessage.notification?.title, 
+        remoteMessage.notification?.body, 
         [{ text: 'OK', onPress: () => console.log('Alert closed') }]
       );
     });

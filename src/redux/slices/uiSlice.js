@@ -4,7 +4,6 @@ const initialState = {
   loading: false,
   error: null,
   otpError: null,
-  modalVisible: false,
 };
 
 const uiSlice = createSlice({
@@ -26,12 +25,9 @@ const uiSlice = createSlice({
     clearOtpError(state) {
       state.otpError = null;
     },
-    toggleModal(state) {
-      state.modalVisible = !state.modalVisible;
-    },
   },
 });
 
-export const { toggleLoading, setError, clearError, setOtpError, clearOtpError, toggleModal } = uiSlice.actions;
+export const { toggleLoading, setError, clearError, setOtpError, clearOtpError} = uiSlice.actions;
 
 export default uiSlice.reducer;

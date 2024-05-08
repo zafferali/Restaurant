@@ -19,7 +19,7 @@ const OrdersListScreen = ({ navigation }) => {
 
   useEffect(() => {
     const restaurantRef = firestore().doc(`restaurants/${restaurantId}`)
-    const statuses = ['received', 'ready', 'picked', 'delivered'] // Only interested in these statuses
+    const statuses = ['received', 'ready']
     const queries = statuses.map(status =>
       firestore()
         .collection('orders')

@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
-import { View, Image, Text, TextInput, ImageBackground, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
+import { View, Image, Text, TextInput, ImageBackground, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { login } from '../../redux/slices/authenticationSlice';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleLoading } from '../../redux/slices/uiSlice';
+import colors from 'constants/colors'
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch()
+  const restaurantId = useSelector(state => state.authentication.restaurantId);
+  const isLoading = useSelector(state => state.ui.loading)
+ 
 
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please enter all fields');
       return;
     }
-
+    dispatch(toggleLoading())
     try {
       console.log('ep', email, password)
       let response = await auth().signInWithEmailAndPassword(email, password);
@@ -30,6 +35,8 @@ const LoginScreen = ({ navigation }) => {
       } else {
         Alert.alert('Error', e.message);
       }
+    } finally {
+      dispatch(toggleLoading())
     }
   };
 
@@ -54,6 +61,7 @@ const LoginScreen = ({ navigation }) => {
           <TextInput
             placeholder="Email"
             placeholderTextColor="rgba(255, 255, 255, 0.4)"
+            autoCapitalize="none"
             autoCorrect={false}
             value={email}
             onChangeText={setEmail}
@@ -75,6 +83,10 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.termsText}>By signing up, you agree to the</Text>
           <Text style={styles.linkText}>Terms & Policy & Privacy Policy</Text>
         </View>
+        {isLoading ? (
+          <View style={styles.overlayStyle}>
+              <ActivityIndicator size='large' color={colors.theme} />
+          </View>) : null}
       </ImageBackground>
     </KeyboardAvoidingView>
   );
@@ -92,7 +104,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 150,
   },
   subtitle: {
     fontSize: 20,
@@ -147,7 +158,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: 'white',
-  }
+  },
+  overlayStyle: {
+    position: 'absolute',
+    backgroundColor: 'rgba(0,0,0,0.6)', 
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2, 
+},
 });
 
 export default LoginScreen;

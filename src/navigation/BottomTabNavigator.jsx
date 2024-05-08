@@ -40,7 +40,11 @@ function BottomTabNavigator() {
 
       {/* Business */}
       <Tab.Screen name="Business" component={BusinessStackScreen}
-        options={{
+        options={({route}) => ({
+          tabBarStyle: {
+            display: getFocusedRouteNameFromRoute(route) === 'ManageScheduleScreen' ? 'none' : 'flex',
+            height: 70,
+          },
           tabBarIcon: ({ focused }) => (
             <View style={styles.menuItem}>
               <Image
@@ -50,14 +54,14 @@ function BottomTabNavigator() {
               <Text style={[styles.menuText, { color: focused ? colors.theme : colors.textLight }]}>Business</Text>
             </View>
           )
-        }}
+        })}
       />
 
       {/* Menu */}
       <Tab.Screen name="Menu" component={MenuStackScreen}
         options={({ route }) => ({
           tabBarStyle: {
-            display: getFocusedRouteNameFromRoute(route) === 'OrderDetailScreen' ? 'none' : 'flex',
+            display: getFocusedRouteNameFromRoute(route) === 'EditItemScreen' ? 'none' : 'flex',
             height: 70,
           },
           tabBarIcon: ({ focused }) => (
@@ -75,7 +79,11 @@ function BottomTabNavigator() {
 
       {/* Profile */}
       <Tab.Screen name="Profile" component={ProfileStackScreen}
-        options={{
+        options={({ route}) => ({
+          tabBarStyle: {
+            display: getFocusedRouteNameFromRoute(route) === 'SettingsScreen' ? 'none' : 'flex',
+            height: 70,
+          },
           tabBarIcon: ({ focused }) => (
             <View style={styles.menuItem}>
               <Image
@@ -85,7 +93,7 @@ function BottomTabNavigator() {
               <Text style={[styles.menuText, { color: focused ? colors.theme : colors.textLight }]}>Profile</Text>
             </View>
           )
-        }}
+        })}
       />
     </Tab.Navigator>
   );

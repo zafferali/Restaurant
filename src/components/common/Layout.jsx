@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image }
 import colors from 'constants/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Layout = ({ children, navigation, backTitle, title, dynamicTitle }) => {
+const Layout = ({ children, navigation, backTitle, title, dynamicTitle, headerRightIcon }) => {
 
   return (
     <KeyboardAvoidingView
@@ -27,6 +27,11 @@ const Layout = ({ children, navigation, backTitle, title, dynamicTitle }) => {
               <Text style={styles.title}>{title}</Text>
             </View>
           }
+          {headerRightIcon && 
+          <TouchableOpacity onPress={ () => navigation.goBack()} style={styles.closeIconContainer}>
+            <Image style={styles.closeIcon} source={require('images/x.png')} />
+          </TouchableOpacity>
+          }
         </View>
         {children}
       </SafeAreaView>
@@ -37,8 +42,18 @@ const Layout = ({ children, navigation, backTitle, title, dynamicTitle }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingHorizontal: 20,
     backgroundColor: '#FFFFFF',
+  },
+  closeIconContainer: {
+    borderRadius: 100,
+    backgroundColor: '#DEDEDE',
+    padding: 4,
+  },
+  closeIcon:  {
+    tintColor: 'black',
+    width: 24,
+    height: 24,
   },
   orderNum: {
     color: colors.theme,
