@@ -29,8 +29,6 @@ const MenuScreen = ({navigation}) => {
           console.error("Error fetching menu items: ", error)
         }
       )
-  
-    // Unsubscribe from the listener when the component unmounts
     return () => unsubscribe()
   }, [restaurantId])
   
