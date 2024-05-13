@@ -42,7 +42,7 @@ const Layout = ({ children, navigation, backTitle, title, dynamicTitle, headerRi
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    padding: 20,
     backgroundColor: '#FFFFFF',
   },
   closeIconContainer: {

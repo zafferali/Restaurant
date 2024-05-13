@@ -100,7 +100,7 @@ const EditItemScreen = ({ navigation, route }) => {
       }));
       setModalVisible(false)
     } catch (error) {
-      Alert.alert('The image was uploaded. Please try again')
+      Alert.alert('The image was not uploaded. Please try again')
     } finally {
       dispatch(toggleLoading());// Stop loading after uploading completes
     }

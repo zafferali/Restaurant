@@ -1,59 +1,79 @@
-import React, { useState } from 'react';
-import { View, Image, Text, TextInput, ImageBackground, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import auth from '@react-native-firebase/auth';
-import { login } from '../../redux/slices/authenticationSlice';
-import { useSelector, useDispatch } from 'react-redux';
-import { toggleLoading } from '../../redux/slices/uiSlice';
+import { useState } from 'react'
+import { View, Image, Text, TextInput, ImageBackground, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import { login } from '../../redux/slices/authenticationSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { toggleLoading } from '../../redux/slices/uiSlice'
 import colors from 'constants/colors'
+import { updateUser } from 'slices/userSlice'
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const dispatch = useDispatch()
-  const restaurantId = useSelector(state => state.authentication.restaurantId);
   const isLoading = useSelector(state => state.ui.loading)
- 
+  const [focus, setFocus] = useState(false)
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please enter all fields');
-      return;
+      Alert.alert('Error', 'Please enter all fields')
+      return
     }
     dispatch(toggleLoading())
     try {
-      console.log('ep', email, password)
       let response = await auth().signInWithEmailAndPassword(email, password);
       if (response && response.user) {
-        console.log('log', response.user.uid)
-        dispatch(login(response.user.uid))
+        const userDoc = await firestore().collection('users').doc(response.user.uid).get();
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          const role = userData.role;
+          let restaurantId = null;
+          const numRestaurants = userData.restaurants.length;
+          if (userData.restaurants && numRestaurants > 0) {
+            restaurantId = userData.restaurants[0].id;  
+          }
+          dispatch(login({
+            userId: response.user.uid,
+            restaurantId,
+            role,
+            numRestaurants
+          }));
+          dispatch(updateUser({
+            name: userData.name,
+            email: userData.email,
+            mobile: userData.phone,
+            photoUrl: userData.photoUrl,
+          }))
+        }
       }
+
     } catch (e) {
       if (e.code === 'auth/user-not-found') {
-        Alert.alert('Error', 'No user found for this email');
+        Alert.alert('Error', 'No user found for this email')
       } else if (e.code === 'auth/wrong-password') {
-        Alert.alert('Error', 'Wrong password provided');
+        Alert.alert('Error', 'Wrong password provided')
       } else {
-        Alert.alert('Error', e.message);
+        Alert.alert('Error', e.message)
       }
     } finally {
       dispatch(toggleLoading())
     }
-  };
+  }
 
   return (
     <KeyboardAvoidingView
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
-    style={styles.container}
+      behavior="padding"
+      style={styles.container}
     >
       <ImageBackground
         source={require('images/main.png')}
         style={styles.backgroundImage}
       >
-        <View style={styles.topSection}>
+        <View style={[styles.topSection]}>
           <Image
             source={require('images/logo.png')}
-            style={styles.logo}
+            style={[styles.logo, focus && {marginTop: 40}]}
           />
           <Text style={styles.subtitle}>Partner Companion</Text>
         </View>
@@ -66,6 +86,8 @@ const LoginScreen = ({ navigation }) => {
             value={email}
             onChangeText={setEmail}
             style={styles.input}
+            onFocus={() => setFocus(true)}
+            onBlur={() => setFocus(false)}
           />
           <TextInput
             placeholder="Password"
@@ -76,6 +98,8 @@ const LoginScreen = ({ navigation }) => {
             returnKeyType="go"
             onChangeText={setPassword}
             style={styles.input}
+            onFocus={() => setFocus(true)}
+            onBlur={() => setFocus(false)}
           />
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginButtonText}>Login</Text>
@@ -85,12 +109,15 @@ const LoginScreen = ({ navigation }) => {
         </View>
         {isLoading ? (
           <View style={styles.overlayStyle}>
-              <ActivityIndicator size='large' color={colors.theme} />
+            <ActivityIndicator size='large' color={colors.theme} />
           </View>) : null}
       </ImageBackground>
     </KeyboardAvoidingView>
-  );
-};
+  )
+}
+
+export default LoginScreen
+
 
 const styles = StyleSheet.create({
   container: {
@@ -106,20 +133,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#C2C2C2',
     alignSelf: 'center',
-    marginBottom: 40,
+    marginBottom: 16,
   },
   form: {
     flex: 1,
     justifyContent: 'flex-start',
   },
   logo: {
-    maxWidth: 334,
-    maxHeight: 106,
+    maxWidth: 234,
+    maxHeight: 80,
     resizeMode: 'contain',
+    marginTop: 180,
   },
   input: {
     marginHorizontal: 20,
@@ -161,13 +189,12 @@ const styles = StyleSheet.create({
   },
   overlayStyle: {
     position: 'absolute',
-    backgroundColor: 'rgba(0,0,0,0.6)', 
+    backgroundColor: 'rgba(0,0,0,0.6)',
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 2, 
-},
+    zIndex: 2,
+  },
 });
 
-export default LoginScreen;

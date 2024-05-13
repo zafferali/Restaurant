@@ -40,7 +40,6 @@ const OrdersListScreen = ({ navigation }) => {
               ordersMap.delete(order.id)
             }
           })
-
           // Convert the map back to an array for rendering, sorting by deliveryTime
           const ordersArray = Array.from(ordersMap.values()).sort((a, b) => {
             return timeToMinutes(a.deliveryTime) - timeToMinutes(b.deliveryTime)
@@ -56,7 +55,7 @@ const OrdersListScreen = ({ navigation }) => {
     )
 
     return () => {
-      unsubscribes.forEach(unsub => unsub()) // Unsubscribe from all listeners on cleanup
+      unsubscribes.forEach(unsub => unsub()) 
     }
   }, [restaurantId])
 

@@ -1,13 +1,9 @@
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { MenuStackScreen, OrderListStackScreen, ProfileStackScreen, BusinessStackScreen } from './StackNavigator';
 import { View, StyleSheet, Image, Text } from 'react-native';
 import colors from '../constants/colors';
 
-const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function BottomTabNavigator() {

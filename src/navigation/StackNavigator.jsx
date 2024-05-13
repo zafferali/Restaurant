@@ -20,27 +20,6 @@ const ProfileStack = createStackNavigator();
 const BusinessStack = createStackNavigator();
 
 
-export const MenuStackScreen = () => (
-
-    <MenuStack.Navigator
-        screenOptions={{
-            headerBackTitleVisible: false, // Hides the back title next to the back button (iOS)
-            gestureEnabled: true, // Enable gesture navigation
-            ...TransitionPresets.SlideFromRightIOS,
-            headerShown: false,
-        }}
-    >
-        <MenuStack.Screen
-            name="MenuScreen"
-            component={MenuScreen}
-        />
-        <MenuStack.Screen
-            name="EditItemScreen"
-            component={EditItemScreen}
-        />
-    </MenuStack.Navigator>
-);
-
 export const OrderListStackScreen = () => (
 
     <OrderListStack.Navigator
@@ -62,6 +41,45 @@ export const OrderListStackScreen = () => (
     </OrderListStack.Navigator>
 );
 
+export const BusinessStackScreen = () => (
+    <BusinessStack.Navigator
+        screenOptions={{
+            gestureEnabled: true, // Enable gesture navigation
+            ...TransitionPresets.SlideFromRightIOS,
+            headerShown: false,
+        }}
+    >
+        <BusinessStack.Screen
+            name="BusinessScreen"
+            component={BusinessScreen}
+        />
+        <BusinessStack.Screen
+            name="ManageScheduleScreen"
+            component={ManageScheduleScreen}
+        />
+    </BusinessStack.Navigator>
+);
+
+export const MenuStackScreen = () => (
+
+    <MenuStack.Navigator
+        screenOptions={{
+            headerBackTitleVisible: false, // Hides the back title next to the back button (iOS)
+            gestureEnabled: true, // Enable gesture navigation
+            ...TransitionPresets.SlideFromRightIOS,
+            headerShown: false,
+        }}
+    >
+        <MenuStack.Screen
+            name="MenuScreen"
+            component={MenuScreen}
+        />
+        <MenuStack.Screen
+            name="EditItemScreen"
+            component={EditItemScreen}
+        />
+    </MenuStack.Navigator>
+);
 
 export const ProfileStackScreen = () => (
     <ProfileStack.Navigator
@@ -83,24 +101,6 @@ export const ProfileStackScreen = () => (
     </ProfileStack.Navigator>
 );
 
-export const BusinessStackScreen = () => (
-    <BusinessStack.Navigator
-        screenOptions={{
-            gestureEnabled: true, // Enable gesture navigation
-            ...TransitionPresets.SlideFromRightIOS,
-            headerShown: false,
-        }}
-    >
-        <BusinessStack.Screen
-            name="BusinessScreen"
-            component={BusinessScreen}
-        />
-        <BusinessStack.Screen
-            name="ManageScheduleScreen"
-            component={ManageScheduleScreen}
-        />
-    </BusinessStack.Navigator>
-);
 
 const styles = StyleSheet.create({
     headerTitle: {
