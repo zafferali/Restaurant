@@ -42,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
           dispatch(updateUser({
             name: userData.name,
             email: userData.email,
-            mobile: userData.phone,
+            mobile: userData.mobile,
             photoUrl: userData.photoUrl,
           }))
         }
