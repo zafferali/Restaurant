@@ -19,15 +19,9 @@ const uiSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
-    setOtpError(state, action) {
-      state.otpError = action.payload;
-    },
-    clearOtpError(state) {
-      state.otpError = null;
-    },
   },
 });
 
-export const { toggleLoading, setError, clearError, setOtpError, clearOtpError} = uiSlice.actions;
+export const { toggleLoading, setError, clearError} = uiSlice.actions;
 
 export default uiSlice.reducer;

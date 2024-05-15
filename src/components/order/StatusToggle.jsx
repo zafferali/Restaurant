@@ -30,7 +30,7 @@ const StatusToggle = ({ orderId }) => {
     if (newStatus === option2 && activeStatus === option1) {
       Alert.alert(
         "Confirm",
-        "Are you sure the food is ready for picku?",
+        "Are you sure the food is ready for pickup?",
         [
           { text: "Cancel", style: "cancel" },
           { text: "Yes", onPress: () => updateFirestore('ready') }

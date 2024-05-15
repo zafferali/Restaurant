@@ -104,8 +104,20 @@ const LoginScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
-          <Text style={styles.termsText}>By signing up, you agree to the</Text>
-          <Text style={styles.linkText}>Terms & Policy & Privacy Policy</Text>
+          <View style={styles.terms}>
+            <Text style={styles.text}>
+              By signing up, you agree to the
+            </Text>
+            <View style={styles.linkContainer}>
+              <Text style={styles.linkText} onPress={() => { /* TODO: Navigate to Terms */ }}>
+                Terms & Policy
+              </Text>
+              <Text style={styles.text}> & </Text>
+              <Text style={styles.linkText} onPress={() => { /* TODO: Navigate to Privacy Policy */ }}>
+                Privacy Policy
+              </Text>
+            </View>
+          </View>
         </View>
         {isLoading ? (
           <View style={styles.overlayStyle}>
@@ -176,16 +188,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  termsText: {
-    color: 'rgba(211, 211, 211, 0.7)',
+  terms: {
+    alignSelf: 'center',
+    marginTop: 40,
+  },
+  text: {
+    color: 'white',
+    opacity: 0.5,
     fontSize: 14,
-    marginTop: 20,
+    fontWeight: '500',
     textAlign: 'center',
   },
   linkText: {
-    fontSize: 16,
-    textAlign: 'center',
     color: 'white',
+    textDecorationLine: 'underline',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   overlayStyle: {
     position: 'absolute',

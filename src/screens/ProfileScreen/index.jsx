@@ -63,7 +63,7 @@ const ProfileScreen = ({ navigation }) => {
         onPress: async () => {
           try {
             await auth().signOut();
-            removeDeviceToken(restaurantId);
+            removeDeviceToken();
             console.log('logged out');
             dispatch(logout());
           } catch (e) {

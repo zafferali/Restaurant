@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   backBtn: {
     width: 36,
     height: 36,
+    tintColor: 'black'
   },
   backTitle: {
     fontSize: 24,

@@ -1,26 +1,30 @@
-import firestore from '@react-native-firebase/firestore';
-import messaging from '@react-native-firebase/messaging';
+import firestore from '@react-native-firebase/firestore'
+import messaging from '@react-native-firebase/messaging'
+import auth from '@react-native-firebase/auth'
 
-export const registerDeviceToken = async (restaurantId) => {
-  const token = await messaging().getToken();
-  // Assuming restaurantId is the document ID for the restaurant in the Firestore
-  const restaurantRef = firestore().collection('restaurants').doc(restaurantId);
+// Function to register the device token
+export const registerDeviceToken = async () => {
+  const token = await messaging().getToken()
+  const user = auth().currentUser
 
-  // Add the token to the fcmTokens array without duplicates
-  restaurantRef.update({
-    fcmTokens: firestore.FieldValue.arrayUnion(token)
-  });
+  if (user) {
+    const userRef = firestore().collection('users').doc(user.uid)
+    userRef.update({
+      fcmToken: token
+    })
+  }
 }
 
-export const removeDeviceToken = async (restaurantId) =>  {
-    const token = await messaging().getToken();
-    const restaurantRef = firestore().collection('restaurants').doc(restaurantId);
-  
-    // Remove the token from the fcmTokens array
-    restaurantRef.update({
-      fcmTokens: firestore.FieldValue.arrayRemove(token)
-    });
+// Function to remove the device token
+export const removeDeviceToken = async () => {
+  const user = auth().currentUser
+
+  if (user) {
+    const userRef = firestore().collection('users').doc(user.uid)
+
+    // Clear the token from the fcmToken field
+    userRef.update({
+      fcmToken: firestore.FieldValue.delete()
+    })
   }
-  
-
-
+}
