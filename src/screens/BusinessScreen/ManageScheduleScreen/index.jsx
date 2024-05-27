@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(171, 171, 171, .3)',
     borderRadius: 6,
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 6,
     paddingHorizontal: 14,
     marginBottom: 20,
   },

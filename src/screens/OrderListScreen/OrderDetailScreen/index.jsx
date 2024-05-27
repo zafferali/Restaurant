@@ -93,10 +93,10 @@ const OrderDetailScreen = ({ route, navigation }) => {
               <Text style={styles.text}>Customer Name</Text>
               {<Text style={styles.custName}>Raghav Handa</Text>}
             </View>}
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
               <Text style={styles.text}>Current Status</Text>
               <CustomCard text={order.orderStatus}/>
-            </View>
+            </View> */}
             {order?.instructions && 
             <View style={styles.row}>
               <Text style={styles.text}>Extra Comments</Text>

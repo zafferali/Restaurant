@@ -4,7 +4,7 @@ import colors from 'constants/colors';
 import firestore from '@react-native-firebase/firestore';
 
 const StatusToggle = ({ orderId }) => {
-  const option1 = 'Food Preparing';
+  const option1 = 'Received';
   const option2 = 'Ready for Pickup';
   let [activeStatus, setActiveStatus] = useState('');
 

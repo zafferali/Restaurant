@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator, TextInput, Switch } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Layout from 'common/Layout';
 import { GlobalStyles } from 'constants/GlobalStyles';
@@ -32,7 +32,7 @@ const Input = ({ label, value, onChangeText, multiline, numeric, cm, textColor }
   );
 };
 
-const TimeInput = ({ label, value, onChangeTime }) => {
+const TimeInput = ({ label, value, onChangeTime, isEnabled }) => {
   const [showPicker, setShowPicker] = useState(false);
 
   const handleConfirm = (date) => {
@@ -45,9 +45,13 @@ const TimeInput = ({ label, value, onChangeTime }) => {
     <View style={styles.row}>
         <View>
           <Text style={styles.availabilityLabel}>{label}</Text>
-          <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.availabilityInput}>
-            <Text style={styles.availabilityText}>{value}</Text>
-          </TouchableOpacity>
+          <TouchableOpacity
+          onPress={() => setShowPicker(true)}
+          style={[styles.availabilityInput]}
+          disabled={!isEnabled}
+        >
+          <Text style={[styles.availabilityText, !isEnabled && styles.disabledText]}>{value}</Text>
+        </TouchableOpacity>
         </View>
       {showPicker && (
         <DateTimePickerModal
@@ -80,14 +84,16 @@ const EditItemScreen = ({ navigation, route }) => {
     temperature: '',
     availability: {
       from: '09:00',
-      until: '17:00'
+      until: '17:00',
+      isAvailable: false,
     },
     size: {
       length: '',
       breadth: '',
       height: '',
-    }
-  });
+    },
+  })
+  
 
   const handleUploadImage = async (fromCamera) => {
     try {
@@ -111,6 +117,16 @@ const EditItemScreen = ({ navigation, route }) => {
     { label: 'Normal', value: 'Normal' },
   ]
 
+  const toggleAvailability = () => {
+    setState(prevState => ({
+      ...prevState,
+      availability: {
+        ...prevState.availability,
+        isAvailable: !prevState.availability.isAvailable
+      }
+    }))
+  }
+  
 
   useEffect(() => {
     const fetchAllCategories = async () => {
@@ -192,7 +208,7 @@ const EditItemScreen = ({ navigation, route }) => {
           description: itemData.description,
           temperature: itemData.temperature,
           categories: itemData.categories,
-          availability: itemData.availability || { from: '', until: '' },
+          availability: itemData.availability || { from: '', until: '', isAvailable: false },
           size: itemData.size || { length: null, breadth: null, height: null }
         })
       } catch (error) {
@@ -235,7 +251,7 @@ const EditItemScreen = ({ navigation, route }) => {
               description: state.description,
               temperature: state.temperature,
               categories: categoriesRefs,
-              availability: state.availability || { from: '', until: '' },
+              availability: state.availability || { from: '', until: '', isAvailable: false },
               size: state.size || { length: null, breadth: null, height: null },
             };
             await firestore()
@@ -294,6 +310,17 @@ const EditItemScreen = ({ navigation, route }) => {
     >
       <ScrollView>
         {isLoading && <ActivityIndicator size="large" color={colors.theme} />}
+        <View style={[styles.row, styles.section, GlobalStyles.lightBorder]}>
+          <Text style={[styles.available, { fontSize: 16, color: state.availability.isAvailable ? colors.theme : colors.danger }]}>
+            {state.availability.isAvailable ? 'Available' : 'Unavailable'}
+          </Text>
+          <Switch
+            trackColor={{ false: colors.warning, true: colors.theme }}
+            thumbColor={state.availability.isAvailable ? colors.lightGray : colors.danger}
+            onValueChange={toggleAvailability}
+            value={state.availability.isAvailable}
+          />
+        </View>
         <View style={[styles.section, GlobalStyles.lightBorder]}>
           <View style={styles.row}>
             <Text style={styles.label}>Thumbnail</Text>
@@ -323,9 +350,10 @@ const EditItemScreen = ({ navigation, route }) => {
           <View style={styles.row}>
             <View>
               <TimeInput
-                label='From'
+                label="From"
                 value={state.availability.from}
                 onChangeTime={(newValue) => handleTextChange(newValue, 'availability.from')}
+                isEnabled={state.availability.isAvailable}
               />
             </View>
             <View style={styles.distanceBar}>
@@ -335,9 +363,10 @@ const EditItemScreen = ({ navigation, route }) => {
             </View>
             <View>
               <TimeInput
-                label='Until'
+                label="Until"
                 value={state.availability.until}
                 onChangeTime={(newValue) => handleTextChange(newValue, 'availability.until')}
+                isEnabled={state.availability.isAvailable}
               />
 
             </View>
@@ -456,6 +485,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  available : {
+    fontFamily: 'Inter-SemiBold',
+    fontSize: 14,
+    color: colors.theme
+  },
   thumbnailContainer: {
     backgroundColor: colors.lightGray,
     borderRadius: 6,
@@ -515,7 +549,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(171, 171, 171, .3)',
     borderRadius: 6,
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 6,
     paddingHorizontal: 14,
     marginBottom: 20,
   },
@@ -523,6 +557,9 @@ const styles = StyleSheet.create({
     color: colors.theme,
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  disabledText: {
+    color: 'rgba(171, 171, 171, .3)',
   },
   label: {
     color: colors.darkGray,

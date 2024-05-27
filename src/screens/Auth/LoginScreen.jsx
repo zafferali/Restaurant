@@ -143,9 +143,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginBottom: 140,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#C2C2C2',
     alignSelf: 'center',
@@ -156,8 +157,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   logo: {
-    maxWidth: 234,
-    maxHeight: 80,
+    maxWidth: 300,
+    maxHeight: 100,
     resizeMode: 'contain',
     marginTop: 180,
   },

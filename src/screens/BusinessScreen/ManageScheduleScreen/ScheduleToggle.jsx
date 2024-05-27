@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
       },
       toggleText: {
         color: colors.theme,
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: '600'
       },
 })
