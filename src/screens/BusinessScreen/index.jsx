@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Switch, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Switch, ActivityIndicator, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import Layout from 'common/Layout';
@@ -11,56 +11,110 @@ import { toggleLoading } from '../../redux/slices/uiSlice';
 
 const Availability = ({restaurantId, navigation}) => {
   const [isEnabled, setIsEnabled] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const fetchRestaurantAvailability = () => {
-      const now = moment.tz('Asia/Kolkata'); // Current time in IST
-      const todayDate = moment.tz(new Date(), 'Asia/Kolkata').startOf('day'); // Start of the day in IST      
-      console.log("Now in IST:", now.format('YYYY-MM-DD HH:mm:ss Z'));
-      console.log("Today's Date in IST:", todayDate.format('YYYY-MM-DD HH:mm:ss Z'));
+      const now = moment.tz('Asia/Kolkata')
+      const todayDate = moment.tz(new Date(), 'Asia/Kolkata').startOf('day')
 
-  
-      const docRef = firestore().collection('restaurants').doc(restaurantId);
+      console.log("Now in IST:", now.format('YYYY-MM-DD HH:mm:ss Z'))
+      console.log("Today's Date in IST:", todayDate.format('YYYY-MM-DD HH:mm:ss Z'))
+
+      const docRef = firestore().collection('restaurants').doc(restaurantId)
       const unsubscribe = docRef.onSnapshot((snapshot) => {
-        const restaurantData = snapshot.data();
-  
-        // Check general availability first
-        const dayOfWeek = now.format('dddd').toLowerCase();
-        const currentDay = restaurantData.availability.general ? restaurantData.availability.general[dayOfWeek] : null;
-        if (currentDay && currentDay.isOpen) {
-          const from = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${currentDay.from}`, 'Asia/Kolkata');
-          const until = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${currentDay.until}`, 'Asia/Kolkata');
-          setIsEnabled(now.isBetween(from, until, null, '[]'));
-        } else {
-          setIsEnabled(false);
+        const restaurantData = snapshot.data()
+        console.log('Fetched restaurant data:', restaurantData)
+
+        // Check manual override first
+        const manualOverride = restaurantData.manualOverride
+        if (manualOverride) {
+          const manualOverrideDate = manualOverride.date.toDate()
+          const isSameDay = moment(manualOverrideDate).isSame(todayDate, 'day')
+          console.log('Manual override date:', manualOverrideDate, 'Is same day:', isSameDay)
+          if (isSameDay) {
+            setIsEnabled(manualOverride.isActive)
+            return
+          }
         }
-  
+
+        // Check general availability
+        const dayOfWeek = now.format('dddd').toLowerCase()
+        const currentDay = restaurantData.availability.general ? restaurantData.availability.general[dayOfWeek] : null
+        if (currentDay && currentDay.isOpen) {
+          const from = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${currentDay.from}`, 'Asia/Kolkata')
+          const until = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${currentDay.until}`, 'Asia/Kolkata')
+          setIsEnabled(now.isBetween(from, until, null, '[]'))
+        } else {
+          setIsEnabled(false)
+        }
+
         // Override with occasional availability if there's a match
-        const occasions = restaurantData.availability.occasional;
+        const occasions = restaurantData.availability.occasional
         if (occasions && occasions.length > 0) {
           occasions.forEach(occasion => {
-            const occasionDate = moment(occasion.date.toDate()).tz('Asia/Kolkata').startOf('day');
+            const occasionDate = moment(occasion.date.toDate()).tz('Asia/Kolkata').startOf('day')
             if (todayDate.isSame(occasionDate, 'day')) {
-              console.log('inse', todayDate)
-              const fromTime = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${occasion.from}`, 'Asia/Kolkata');
-              const untilTime = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${occasion.until}`, 'Asia/Kolkata');
-              setIsEnabled(occasion.isOpen && now.isBetween(fromTime, untilTime, null, '[]'));
+              console.log('Occasion date:', occasionDate)
+              const fromTime = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${occasion.from}`, 'Asia/Kolkata')
+              const untilTime = moment.tz(`${todayDate.format('YYYY-MM-DD')}T${occasion.until}`, 'Asia/Kolkata')
+              setIsEnabled(occasion.isOpen && now.isBetween(fromTime, untilTime, null, '[]'))
             }
-          });
+          })
         }
-      });
-  
-      return () => unsubscribe();
-    };
-  
-    const unsubscribe = fetchRestaurantAvailability();
+      })
+
+      return () => unsubscribe()
+    }
+
+    const unsubscribe = fetchRestaurantAvailability()
     return () => {
-      unsubscribe();
-    };
-  }, [restaurantId]);
-  const toggleSwitch = () => {
-    // Toggle switch logic if needed
-  };
+      unsubscribe()
+    }
+  }, [restaurantId])
+
+  const confirmToggle = (newState) => {
+    const message = newState ? 'Do you want to go ON for the day?' : 'Do you want to go OFF for the day?'
+    Alert.alert(
+      'Confirm Change',
+      message,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Yes',
+          onPress: () => toggleSwitch(newState)
+        }
+      ]
+    )
+  }
+
+  const toggleSwitch = async (newState) => {
+    const now = moment.tz('Asia/Kolkata')
+    
+    // Optimistically update the UI
+    setIsEnabled(newState)
+
+    const manualOverride = {
+      isActive: newState,
+      date: firestore.Timestamp.fromDate(now.toDate())
+    }
+
+    try {
+      setLoading(true)
+      await firestore().collection('restaurants').doc(restaurantId).update({ manualOverride })
+      console.log('Manual override updated:', manualOverride)
+    } catch (error) {
+      console.error('Error updating manual override:', error)
+      // Revert the optimistic update if there's an error
+      setIsEnabled(!newState)
+    } finally {
+      setLoading(false)
+    }
+  }
+
 
   return (
     <View style={[GlobalStyles.lightBorder, { paddingVertical: 20 }]}>
@@ -72,7 +126,7 @@ const Availability = ({restaurantId, navigation}) => {
           trackColor={{ false: colors.warning, true: colors.theme }}
           thumbColor={isEnabled ? colors.lightGray : colors.danger}
           ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
+          onValueChange={confirmToggle}
           value={isEnabled}
         />
       </View>
@@ -333,6 +387,7 @@ const styles = StyleSheet.create({
   header: {
     fontWeight: '600',
     fontSize: 12,
+    color: 'rgba(0,0,0,.45)',
     padding: 10,
     backgroundColor: colors.lightGray,
     borderTopLeftRadius: 10,

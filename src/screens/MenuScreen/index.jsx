@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native'
 import { useSelector } from 'react-redux'
@@ -8,8 +7,9 @@ import SearchBar from 'common/SearchBar'
 import { GlobalStyles } from 'constants/GlobalStyles'
 import colors from 'constants/colors'
 
-const MenuScreen = ({navigation}) => {
+const MenuScreen = ({ navigation }) => {
   const [menuItems, setMenuItems] = useState([])
+  const [filteredMenuItems, setFilteredMenuItems] = useState([])
   const restaurantId = useSelector(state => state.authentication.restaurantId)
 
   useEffect(() => {
@@ -24,6 +24,7 @@ const MenuScreen = ({navigation}) => {
             ...doc.data()
           }))
           setMenuItems(updatedMenuItems)
+          setFilteredMenuItems(updatedMenuItems)
         },
         error => {
           console.error("Error fetching menu items: ", error)
@@ -31,11 +32,22 @@ const MenuScreen = ({navigation}) => {
       )
     return () => unsubscribe()
   }, [restaurantId])
-  
+
+  const handleSearch = query => {
+    if (query.trim() === '') {
+      setFilteredMenuItems(menuItems)
+    } else {
+      const lowercasedQuery = query.toLowerCase()
+      const filtered = menuItems.filter(item =>
+        item.name.toLowerCase().includes(lowercasedQuery)
+      )
+      setFilteredMenuItems(filtered)
+    }
+  }
 
   const renderItem = ({ item }) => (
     <View style={[GlobalStyles.lightBorder, styles.itemContainer]}>
-      <Image source={{uri: item.thumbnailUrl}} style={styles.image} />
+      <Image source={{ uri: item.thumbnailUrl }} style={styles.image} />
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{item.name}</Text>
         <Text style={styles.description}>{item.description}</Text>
@@ -43,7 +55,7 @@ const MenuScreen = ({navigation}) => {
       <TouchableOpacity
         style={styles.editButton}
         onPress={() => navigation.navigate('EditItemScreen', { itemId: item.id })}
-      > 
+      >
         <Image source={require('images/edit.png')} style={styles.editIcon} />
         <Text style={styles.editText}>Edit</Text>
       </TouchableOpacity>
@@ -56,13 +68,11 @@ const MenuScreen = ({navigation}) => {
       navigation={navigation}
     >
       <SearchBar
-        placeholder="Search orders.."
-        onSearch={(query) => {
-          console.log(query)
-        }}
+        placeholder="Search menu items.."
+        onSearch={handleSearch}
       />
       <FlatList
-        data={menuItems}
+        data={filteredMenuItems}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         style={styles.list}
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
     width: 13,
     height: 13,
   },
-  editText:{
+  editText: {
     fontSize: 12,
     fontWeight: '600',
     color: colors.theme,
@@ -126,4 +136,3 @@ const styles = StyleSheet.create({
 })
 
 export default MenuScreen
-

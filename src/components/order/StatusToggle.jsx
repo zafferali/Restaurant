@@ -13,7 +13,7 @@ const StatusToggle = ({ orderId }) => {
       .collection('orders')
       .doc(orderId)
       .onSnapshot(doc => {
-        const status = doc.data().orderStatus;
+        const status = doc.data()?.orderStatus;
         if (status == 'received') {
           setActiveStatus(option1);
         } else if (status == 'ready') {

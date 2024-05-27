@@ -1,9 +1,9 @@
-import React, { useRef } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useRef } from 'react'
+import { View, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import colors from 'constants/colors'
 
 const SearchBar = ({ placeholder, onSearch }) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef(null)
 
   return (
     <View style={styles.container}>
@@ -20,12 +20,13 @@ const SearchBar = ({ placeholder, onSearch }) => {
         ref={inputRef}
         onChangeText={onSearch}
         placeholder={placeholder}
+        placeholderTextColor='#666666'
         style={styles.input}
         clearButtonMode="while-editing" // iOS only
       />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -51,6 +52,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-});
+})
 
-export default SearchBar;
+export default SearchBar
