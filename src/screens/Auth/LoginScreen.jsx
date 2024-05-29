@@ -8,7 +8,7 @@ import { toggleLoading } from '../../redux/slices/uiSlice'
 import colors from 'constants/colors'
 import { updateUser } from 'slices/userSlice'
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     justifyContent: 'center',
+    resizeMode: 'cover'
   },
   topSection: {
     flex: 1,
@@ -155,6 +156,7 @@ const styles = StyleSheet.create({
   form: {
     flex: 1,
     justifyContent: 'flex-start',
+    paddingBottom: 80,
   },
   logo: {
     maxWidth: 300,
