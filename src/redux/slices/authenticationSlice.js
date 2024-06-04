@@ -5,7 +5,8 @@ const initialState = {
   isAuthenticated: false,
   userId: null,
   role: null,
-  numRestaurants: 0, 
+  numRestaurants: 0,
+  loading: true
 };
 
 const authenticationSlice = createSlice({
@@ -29,9 +30,17 @@ const authenticationSlice = createSlice({
     updateRestaurant(state, action) {
       state.restaurantId = action.payload;
     },
+    setAuthenticated(state, action) {
+      state.userId = action.payload.userId;
+      state.restaurantId = action.payload.restaurantId;
+      state.role = action.payload.role;
+      state.numRestaurants = action.payload.numRestaurants;
+      state.isAuthenticated = action.payload.isAuthenticated;
+      state.loading = false;
+    },
   },
 });
 
-export const { login, logout, updateRestaurant } = authenticationSlice.actions;
+export const { login, logout, updateRestaurant, setAuthenticated } = authenticationSlice.actions;
 
 export default authenticationSlice.reducer;

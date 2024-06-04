@@ -284,12 +284,12 @@ const ManageScheduleScreen = ({ navigation }) => {
         )}
       </ScrollView>
       <SelecetDateModal 
-      visible={modalVisible} 
-      onClose={toggleModal}
-      date={date}
-      onAdd={handleAddOccasion}
-      onDateChange={handleDateChange}
-    /></>
+        visible={modalVisible} 
+        onClose={toggleModal}
+        date={date}
+        onAdd={handleAddOccasion}
+        onDateChange={handleDateChange}/>
+      </>
     );
   };  
   

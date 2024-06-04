@@ -1,33 +1,52 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import OrderItemHeader from './OrderItemHeader';
-import ItemWithQty from './ItemWithQty';
-import colors from 'constants/colors';
-import CustomButton from 'common/CustomButton';
-import StatusToggle from './StatusToggle';
+import React, { useState } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import ItemWithQty from './ItemWithQty'
+import colors from 'constants/colors'
+import CustomButton from 'common/CustomButton'
+import StatusToggle from './StatusToggle'
+
+const subtract30Minutes = (timeStr) => {
+  let [hours, minutes] = timeStr.split(':').map(Number)
+  let date = new Date()
+  date.setHours(hours)
+  date.setMinutes(minutes - 30)
+
+  let newHours = date.getHours()
+  let newMinutes = date.getMinutes()
+  if (newMinutes < 0) {
+    newMinutes += 60
+    newHours -= 1
+  }
+  return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`
+}
 
 const OrderItem = ({ order, navigation }) => {
-  const [variant, setVariant] = useState('acceptReject'); // default variant
-  console.log('hello',order.length)
+  const [variant, setVariant] = useState('acceptReject') // default variant
+  const adjustedDeliveryTime = subtract30Minutes(order.deliveryTime)
+
   const handleAccept = () => {
-    console.log('Order Accepted:', order.id);
-    setVariant('manage'); // Change to 'manage' variant
-  };
+    console.log('Order Accepted:', order.id)
+    setVariant('manage') // Change to 'manage' variant
+  }
 
   const handleReject = () => {
-    console.log('Order Rejected:', order.id);
-  };
+    console.log('Order Rejected:', order.id)
+  }
 
   const handleManage = () => {
     navigation.navigate('OrderDetailScreen', { orderId: order.id })
-  };
-
+  }
 
   return (
     <View style={styles.orderItemContainer}>
-      {/* Top row with Order # and locatio */}
+      {/* Top row with Order # and location */}
       <View style={styles.topRow}>
-        <OrderItemHeader orderNumber={`#${order.orderNum}`} deliveryTime={order.deliveryTime}/>
+        <View style={styles.headerContainer}>
+          <Text style={styles.orderNumber}>Order
+            <Text style={{ color: colors.theme }}> #{order.orderNum}</Text>
+          </Text>
+          <Text style={styles.location}>{adjustedDeliveryTime}</Text>
+        </View>
       </View>
 
       {/* Middle row with order details */}
@@ -36,18 +55,18 @@ const OrderItem = ({ order, navigation }) => {
       </View>
 
       {/* Bottom row with action buttons or update status buttons */}
-          <>
-            <View style={styles.statusContainer}>
-              <View>
-                <Text style={styles.updateText}>Update Status</Text>
-              </View>
-              <StatusToggle style={styles.toggle} orderId={order.id}/>
-            </View>
-            <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, { marginHorizontal: 8 }]} />
-          </>
+      <>
+        <View style={styles.statusContainer}>
+          <View>
+            <Text style={styles.updateText}>Update Status</Text>
+          </View>
+          <StatusToggle style={styles.toggle} orderId={order.id} />
+        </View>
+        <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, { marginHorizontal: 8 }]} />
+      </>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   orderItemContainer: {
@@ -58,20 +77,31 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 16,
   },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 35,
+    paddingHorizontal: 10,
+    backgroundColor: colors.bgExtraLight,
+    borderRadius: 10,
+    marginBottom: 8,
+  },
+  orderNumber: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#646464'
+  },
+  location: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.theme
+  },
   item: {
     marginBottom: 20,
   },
   middleRow: {
     marginHorizontal: 10,
-  },
-  bottomRow: {
-    marginTop: 12,
-  },
-  updateButton: {
-    backgroundColor: 'lightblue',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
   },
   updateText: {
     fontSize: 12,
@@ -118,25 +148,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 4,
-
   },
   buttonText: {
     color: 'white',
     fontWeight: '600',
     fontSize: 12,
   },
-  acceptButton: {
-    backgroundColor: colors.theme,
-    flex: 2,
-  },
-  rejectButton: {
-    backgroundColor: colors.danger,
-    flex: 1,
-  },
-  icon: {
-    width: 24,
-    height: 24,
-  },
-});
+})
 
-export default OrderItem;
+export default OrderItem

@@ -20,25 +20,39 @@ const LoginScreen = () => {
       Alert.alert('Error', 'Please enter all fields')
       return
     }
+  
+    const lowercasedEmail = email.toLowerCase()
     dispatch(toggleLoading())
+  
     try {
-      let response = await auth().signInWithEmailAndPassword(email, password);
+      // Check if the email exists in the custom 'users' collection
+      const usersQuerySnapshot = await firestore()
+        .collection('users')
+        .where('email', '==', lowercasedEmail)
+        .get()
+  
+      if (usersQuerySnapshot.empty) {
+        Alert.alert('Error', 'No user found with this email')
+        return
+      }
+  
+      let response = await auth().signInWithEmailAndPassword(lowercasedEmail, password)
       if (response && response.user) {
-        const userDoc = await firestore().collection('users').doc(response.user.uid).get();
+        const userDoc = await firestore().collection('users').doc(response.user.uid).get()
         if (userDoc.exists) {
-          const userData = userDoc.data();
-          const role = userData.role;
-          let restaurantId = null;
-          const numRestaurants = userData.restaurants.length;
+          const userData = userDoc.data()
+          const role = userData.role
+          let restaurantId = null
+          const numRestaurants = userData.restaurants.length
           if (userData.restaurants && numRestaurants > 0) {
-            restaurantId = userData.restaurants[0].id;  
+            restaurantId = userData.restaurants[0].id
           }
           dispatch(login({
             userId: response.user.uid,
             restaurantId,
             role,
             numRestaurants
-          }));
+          }))
           dispatch(updateUser({
             name: userData.name,
             email: userData.email,
@@ -47,19 +61,17 @@ const LoginScreen = () => {
           }))
         }
       }
-
     } catch (e) {
-      if (e.code === 'auth/user-not-found') {
-        Alert.alert('Error', 'No user found for this email')
-      } else if (e.code === 'auth/wrong-password') {
-        Alert.alert('Error', 'Wrong password provided')
+     if (e.code === 'auth/invalid-credential') {
+        Alert.alert('Invalid credentials', 'Please enter correct Email/Password')
       } else {
-        Alert.alert('Error', e.message)
+        Alert.alert('Error', 'Unknown error')
       }
     } finally {
       dispatch(toggleLoading())
     }
   }
+  
 
   return (
     <KeyboardAvoidingView
