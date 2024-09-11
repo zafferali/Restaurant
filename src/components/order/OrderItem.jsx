@@ -1,80 +1,72 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import OrderItemHeader from './OrderItemHeader';
-import ItemWithQty from './ItemWithQty';
-import colors from 'constants/colors';
-import CustomButton from 'common/CustomButton';
-import StatusToggle from './StatusToggle';
+import React, { useState } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import ItemWithQty from './ItemWithQty'
+import colors from 'constants/colors'
+import CustomButton from 'common/CustomButton'
+import StatusToggle from './StatusToggle'
+
+const subtract30Minutes = (timeStr) => {
+  let [hours, minutes] = timeStr.split(':').map(Number)
+  let date = new Date()
+  date.setHours(hours)
+  date.setMinutes(minutes - 30)
+
+  let newHours = date.getHours()
+  let newMinutes = date.getMinutes()
+  if (newMinutes < 0) {
+    newMinutes += 60
+    newHours -= 1
+  }
+  return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`
+}
 
 const OrderItem = ({ order, navigation }) => {
-  const [variant, setVariant] = useState('acceptReject'); // default variant
+  const [variant, setVariant] = useState('acceptReject') // default variant
+  const adjustedDeliveryTime = subtract30Minutes(order.deliveryTime)
 
   const handleAccept = () => {
-    console.log('Order Accepted:', order.id);
-    setVariant('manage'); // Change to 'manage' variant
-  };
+    console.log('Order Accepted:', order.id)
+    setVariant('manage') // Change to 'manage' variant
+  }
 
   const handleReject = () => {
-    console.log('Order Rejected:', order.id);
-  };
+    console.log('Order Rejected:', order.id)
+  }
 
   const handleManage = () => {
-    navigation.navigate('OrderDetailScreen', { orderNum: 'Order #301'  })
-  };
-
-  // Component to render the update status buttons
-  const UpdateStatusButtons = () => (
-    <View style={styles.updateStatusContainer}>
-      <TouchableOpacity style={styles.updateButton}>
-        <Text>Food Preparing</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.updateButton}>
-        <Text>Ready for Pickup</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    navigation.navigate('OrderDetailScreen', { orderId: order.id })
+  }
 
   return (
     <View style={styles.orderItemContainer}>
       {/* Top row with Order # and location */}
       <View style={styles.topRow}>
-        <OrderItemHeader orderNumber="#301" location="IIT Delhi" />
+        <View style={styles.headerContainer}>
+          <Text style={styles.orderNumber}>Order
+            <Text style={{ color: colors.theme }}> #{order.orderNum}</Text>
+          </Text>
+          <Text style={styles.location}>{adjustedDeliveryTime}</Text>
+        </View>
       </View>
 
       {/* Middle row with order details */}
       <View style={styles.middleRow}>
-        <ItemWithQty style={styles.item} itemName={"Pizza"} itemQty={"2"}/>
-        <ItemWithQty style={styles.item} itemName={"Brownie"} itemQty={"1"}/>
+        {order.items.map((item, index) => <ItemWithQty key={index} style={styles.item} itemName={item.name} itemQty={item.quantity} />)}
       </View>
 
       {/* Bottom row with action buttons or update status buttons */}
-      <View style={styles.bottomRow}>
-        {variant === 'acceptReject' ? (
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={[styles.button, styles.acceptButton]} onPress={handleAccept}>
-              <Image source={require('images/tick.png')} style={styles.icon}/>
-              <Text style={styles.buttonText}>Accept Order</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.rejectButton]} onPress={handleReject}>
-              <Image source={require('images/x.png')} style={styles.icon}/>
-              <Text style={styles.buttonText}>Reject</Text>
-            </TouchableOpacity>
+      <>
+        <View style={styles.statusContainer}>
+          <View>
+            <Text style={styles.updateText}>Update Status</Text>
           </View>
-        ) : (
-          <>
-            <View style={styles.statusContainer}>
-              <View>
-                <Text >Update Status</Text>
-              </View>
-              <StatusToggle style={styles.toggle}/>
-            </View>
-            <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, styles.manageOrderBtn]}/>
-          </>
-        )}
-      </View>
+          <StatusToggle style={styles.toggle} orderId={order.id} />
+        </View>
+        <CustomButton icon title="Manage Order" onPress={handleManage} style={[styles.buttonText, { marginHorizontal: 8 }]} />
+      </>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   orderItemContainer: {
@@ -85,20 +77,36 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 16,
   },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 35,
+    paddingHorizontal: 10,
+    backgroundColor: colors.bgExtraLight,
+    borderRadius: 10,
+    marginBottom: 8,
+  },
+  orderNumber: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#646464'
+  },
+  location: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.theme
+  },
   item: {
     marginBottom: 20,
   },
   middleRow: {
     marginHorizontal: 10,
   },
-  bottomRow: {
-    marginTop: 12,
-  },
-  updateButton: {
-    backgroundColor: 'lightblue',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
+  updateText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'gray',
   },
   manageButton: {
     backgroundColor: 'lightgray',
@@ -118,11 +126,11 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: 10,
-    marginBottom: 10,
-    gap: 10,
+    marginHorizontal: 4,
+    marginVertical: 10,
+    gap: 4,
   },
   statusText: {
     fontSize: 12,
@@ -140,28 +148,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 4,
-
   },
   buttonText: {
     color: 'white',
     fontWeight: '600',
     fontSize: 12,
   },
-  acceptButton: {
-    backgroundColor: colors.theme,
-    flex: 2,
-  },
-  rejectButton: {
-    backgroundColor: colors.danger,
-    flex: 1,
-  },
-  icon: {
-    width: 24,
-    height: 24,
-  },
-  manageOrderBtn: {
-    marginHorizontal: 8,
-  }
-});
+})
 
-export default OrderItem;
+export default OrderItem

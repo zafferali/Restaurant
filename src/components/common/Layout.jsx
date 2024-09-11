@@ -1,81 +1,101 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Animated } from 'react-native';
-import Menu from 'components/Menu';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from 'react';
+import { View, Text, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image } from 'react-native';
 import colors from 'constants/colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Layout = ({ children, showMenu, isScrollable }) => {
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
-
-  // Threshold to determine scroll direction
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-  // Visibility state for header and bottom menu
-  const [visible, setVisible] = useState(true);
-
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    {
-      listener: event => {
-        const currentScrollY = event.nativeEvent.contentOffset.y;
-        setVisible(currentScrollY <= lastScrollY || currentScrollY < 100);
-        setLastScrollY(currentScrollY);
-      },
-      useNativeDriver: true, // Set to true if you want to offload animations to native thread
-    },
-  );
-  const ContentComponent = isScrollable ? Animated.ScrollView : View;
+const Layout = ({ children, navigation, backTitle, title, dynamicTitle, headerRightIcon }) => {
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Screen content */}
-      <ContentComponent style={styles.content} onScroll={handleScroll} scrollEventThrottle={16}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+    >
+      <SafeAreaView style={styles.container}>
+        <View style={styles.headerContainer}>
+          {backTitle ?
+            <View style={styles.headerLeft}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Image style={styles.backBtn} source={require('images/back.png')} />
+              </TouchableOpacity>
+              <View style={styles.backTitleContainer}>
+                <Text style={styles.backTitle}>{backTitle}</Text>
+                {dynamicTitle && <Text style={styles.dynamicTitle}>{dynamicTitle}</Text> }
+              </View>
+            </View> :
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>{title}</Text>
+            </View>
+          }
+          {headerRightIcon && 
+          <TouchableOpacity onPress={ () => navigation.goBack()} style={styles.closeIconContainer}>
+            <Image style={styles.closeIcon} source={require('images/x.png')} />
+          </TouchableOpacity>
+          }
+        </View>
         {children}
-      </ContentComponent>
-    </SafeAreaView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    backgroundColor: 'white',
-    paddingTop: -30,
+    padding: 20,
+    backgroundColor: '#FFFFFF',
   },
-  // header: {
-  //   flex: 1,
-  //   flexDirection: 'row',
-  //   position: 'absolute',
-  //   top: 50,
-  //   left: 20,
-  //   gap: 10,
-  //   zIndex: 10,
-  // },
-  // backButton: {
-  //   width: 46,
-  //   height: 46,
-  //   zIndex: 10,
-  //   flexDirection: 'row',
-  // },
-
-  // bigTitle: {
-  //   fontSize: 38,
-  //   color: 'black',
-  //   fontWeight: '700',
-  // },
+  closeIconContainer: {
+    borderRadius: 100,
+    backgroundColor: '#DEDEDE',
+    padding: 4,
+  },
+  closeIcon:  {
+    tintColor: 'black',
+    width: 24,
+    height: 24,
+  },
   orderNum: {
     color: colors.theme,
   },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backBtn: {
+    width: 36,
+    height: 36,
+    tintColor: 'black'
+  },
+  backTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  backTitleContainer: {
+    flexDirection: 'row',
+  },
+  dynamicTitle :{
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.theme,
+  },
+  titleContainer: {
+    flexDirection: 'column'
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: 'black',
+  },
   content: {
     flex: 1,
-  },
-  bottomMenu: {
-    height: 50, // Adjust as needed
-    backgroundColor: '#eee',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
   },
 });
 

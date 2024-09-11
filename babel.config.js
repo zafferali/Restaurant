@@ -12,7 +12,9 @@ module.exports = {
           assets: './src/assets',
           images:'./src/assets/images',
           constants: './src/constants',
-          // Add more aliases here
+          globals: './src/globals',
+          utils: './src/utils',
+          slices: './src/redux/slices',
         },
         extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
       },
