@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.theme,
     textAlign: 'left',
+    textTransform: 'capitalize',
   },
   text: {
     color: colors.darkGray,
